@@ -1,0 +1,1538 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="description" content="Methodology, equations, calibration, and source documentation for the Social Security Solvency Simulator."/>
+<title>Methodology | Social Security Solvency Simulator</title>
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['\\(','\\)']],
+    displayMath: [['\\[','\\]']],
+    tags: 'ams'
+  },
+  svg: {fontCache: 'global'}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+:root{
+  --navy:#0a1830;--navy2:#102442;--blue:#2b6de9;--ink:#122033;--muted:#65758b;
+  --bg:#f4f7fb;--card:#fff;--line:#dce4ee;--green:#138a62;--amber:#b96e10;
+  --red:#c2413a;--purple:#7057c7;--shadow:0 8px 30px rgba(16,36,66,.08);
+  --eqbg:#f8faff;--source:#eef7f3;--derived:#eef4fd;--choice:#fff8e8;--gap:#fff2f1
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:94px}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+a{color:#245fcf;text-decoration-thickness:1px;text-underline-offset:2px}a:hover{color:#17479f}
+header{background:linear-gradient(120deg,var(--navy),var(--navy2));color:#fff;padding:16px 24px;position:sticky;top:0;z-index:50;box-shadow:0 4px 18px rgba(0,0,0,.16)}
+.head{max-width:1320px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:18px}.brand h1{font-size:19px;margin:0}.brand p{font-size:11px;margin:3px 0 0;color:#c9d6e8}
+.head-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.badge{border:1px solid rgba(255,255,255,.26);background:rgba(255,255,255,.09);padding:8px 12px;border-radius:999px;font-size:11px}.header-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:38px;padding:9px 13px;border-radius:10px;border:1px solid #cfd8e6;background:#fff;color:#243a57;font-size:12px;font-weight:800;text-decoration:none}.header-btn:hover{background:#f6f8fc;color:#243a57}
+.shell{max-width:1320px;margin:0 auto;padding:28px 24px 70px}.hero{background:linear-gradient(135deg,#fff,#f7faff);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:30px;margin-bottom:20px}.eyebrow{text-transform:uppercase;letter-spacing:.1em;color:#5d6f86;font-size:11px;font-weight:850;margin-bottom:8px}.hero h2{font-size:32px;letter-spacing:-.025em;margin:0;color:var(--navy)}.hero p{max-width:900px;color:var(--muted);font-size:14px;line-height:1.65;margin:10px 0 0}
+.layout{display:grid;grid-template-columns:255px minmax(0,1fr);gap:20px;align-items:start}.toc{position:sticky;top:90px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:15px;max-height:calc(100vh - 112px);overflow:auto}.toc-title{font-size:10px;text-transform:uppercase;letter-spacing:.09em;font-weight:850;color:#65758b;margin:2px 7px 9px}.toc a{display:block;padding:7px 9px;border-radius:8px;color:#4d6078;text-decoration:none;font-size:12px;line-height:1.25}.toc a:hover,.toc a.active{background:#eef4fd;color:#1f4f9c}.toc .sub{padding-left:19px;font-size:11px}
+.content{min-width:0}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:24px;margin-bottom:16px}.card h2{font-size:21px;margin:0 0 12px;color:var(--navy);letter-spacing:-.015em}.card h3{font-size:15px;margin:23px 0 9px;color:#243a57}.card p,.card li{font-size:13px;line-height:1.67;color:#40516a}.card ul{padding-left:21px}.card li+li{margin-top:5px}.kicker{font-size:11px;color:#65758b;text-transform:uppercase;letter-spacing:.08em;font-weight:800;margin-bottom:5px}.lead{font-size:14px!important;color:#34455e!important}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.mini{border:1px solid #e1e7ef;border-radius:11px;background:#fbfcfe;padding:14px}.mini b{display:block;color:#273a54;font-size:12px;margin-bottom:4px}.mini span{font-size:12px;color:#66778d;line-height:1.45}
+.eq-card{margin:15px 0 18px;border:1px solid #d8e2f1;border-radius:12px;background:var(--eqbg);overflow:hidden;min-width:0}.eq-head{padding:11px 14px;background:#f0f5fd;border-bottom:1px solid #d8e2f1;color:#29466d;font-size:12px;font-weight:850}.vars{margin:0;padding:12px 14px 6px;min-width:0}.vars-row{display:grid;grid-template-columns:minmax(115px,180px) minmax(0,1fr);gap:12px;padding:5px 0;border-bottom:1px dashed #dfe6f0;min-width:0}.vars-row:last-child{border-bottom:0}.vars dt{font-size:12px;font-weight:750;color:#213b60;min-width:0}.vars dd{margin:0;font-size:12px;line-height:1.45;color:#5c6e85;min-width:0;overflow-wrap:anywhere}.equation{display:block;width:100%;max-width:100%;min-width:0;padding:8px 16px 14px;border-top:1px solid #e4eaf3;background:#fff;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-inline:contain}.equation mjx-container[jax="SVG"][display="true"]{display:block!important;width:max-content!important;min-width:100%;max-width:none!important;margin:.65em 0!important;text-align:center!important}.equation mjx-container[jax="SVG"]>svg{display:block;max-width:none!important;height:auto}.eq-note{padding:0 14px 13px;font-size:11px;line-height:1.55;color:#6c7d93;background:#fff;overflow-wrap:anywhere}
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:11px}.table{width:100%;border-collapse:collapse;font-size:12px;background:#fff}.table th{background:#f7f9fc;color:#53657e;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.05em;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}.table td{padding:10px;border-bottom:1px solid #edf1f5;vertical-align:top;color:#40516a;line-height:1.48}.table tr:last-child td{border-bottom:0}.num{text-align:right;white-space:nowrap}.tight td{padding:8px 9px}.source-cell{min-width:205px}
+.callout{border:1px solid #cfe0f7;background:#f6f9fe;border-radius:10px;padding:13px 15px;margin:12px 0;color:#49627f;font-size:12px;line-height:1.55}.callout strong{color:#2e4b70}.callout.warn{background:#fff8e8;border-color:#f3c987;color:#75490c}.callout.warn strong{color:#5e3a08}.callout.green{background:#f4fbf8;border-color:#c8eadc;color:#326953}.callout.red{background:#fff5f4;border-color:#f1d3cf;color:#7d453e}
+.tag{display:inline-block;border-radius:999px;padding:4px 8px;font-size:9px;font-weight:850;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}.tag.direct{background:var(--source);color:#247054}.tag.derived{background:var(--derived);color:#315e9b}.tag.choice{background:var(--choice);color:#915a10}.tag.gap{background:var(--gap);color:#a3453d}.tag.external{background:#f3effb;color:#654ca1}
+.cite{font-size:11px;line-height:1.45}.cite a{font-weight:750}.small{font-size:11px!important;color:#6c7d93!important}.source-list{display:grid;gap:9px}.source-item{border:1px solid #e2e7ef;border-radius:10px;padding:11px 13px;background:#fbfcfe}.source-item b{font-size:12px;color:#263b58}.source-item p{margin:3px 0 0;font-size:11px;line-height:1.48;color:#65758b}.footer{color:#73839a;font-size:11px;line-height:1.6;padding:8px 2px;text-align:center}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#f1f4f8;padding:1px 4px;border-radius:4px;font-size:.94em}
+@media(max-width:930px){.layout{grid-template-columns:1fr}.toc{position:static;max-height:none}.toc nav{columns:2}.head{align-items:flex-start}.hero h2{font-size:27px}}
+@media(max-width:650px){
+  header{padding:13px 14px}
+  .shell{padding:16px 14px 50px}
+  .hero,.card{padding:19px}
+  .hero h2{font-size:24px}
+  .head{flex-direction:column;gap:10px}
+  .head-actions{width:100%}
+  .header-btn{flex:1}
+  .badge{display:none}
+  .grid2{grid-template-columns:1fr}
+  .toc nav{columns:1}
+  .vars-row{grid-template-columns:1fr;gap:2px}
+  .eq-card{border-radius:10px}
+  .eq-head{padding:10px 12px}
+  .vars{padding:10px 12px 5px}
+  .vars dt,.vars dd{font-size:11.5px}
+  .equation{padding:7px 10px 12px;font-size:.88em;scrollbar-width:thin}
+  .equation mjx-container[jax="SVG"][display="true"]{min-width:max-content;text-align:left!important}
+  .eq-note{padding:0 12px 12px}
+}
+@media print{header,.toc{display:none}.shell{max-width:none;padding:0}.layout{display:block}.card,.hero{box-shadow:none;break-inside:auto}.eq-card,.tablewrap{break-inside:avoid}.card{border-color:#ddd}.content{width:100%}a{color:inherit;text-decoration:none}}
+
+.example-label{margin:10px 16px 0;font-size:10px;font-weight:850;letter-spacing:.06em;text-transform:uppercase;color:#52657e}
+.equation.example{margin-top:5px;background:#fbfcfe;border-top:1px dashed #d8e2f1}
+.example-note{padding:0 16px 12px;font-size:10px;line-height:1.5;color:#718198;background:#fbfcfe}
+@media(max-width:650px){
+  .example-label{margin:9px 10px 0}
+  .example-note{padding:0 10px 11px}
+}
+
+.eq-card > .equation:not(.example){margin-top:12px;padding-top:14px;padding-bottom:16px;border-top:1px solid #c9d3df;border-bottom:1px solid #dbe2ea;background:#fff}
+.eq-card > .vars + .equation:not(.example){margin-top:0}
+.example-wrap{margin:10px 16px 14px 16px;border:1px solid #bcc6d2;border-radius:10px;background:#e7ebf0;overflow:hidden}
+.example-trigger{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#34465e;background:#dfe4ea;cursor:pointer}
+.example-trigger .example-chip{display:inline-flex;align-items:center;justify-content:center;padding:5px 9px;border-radius:999px;border:1px solid #aeb9c6;background:#f7f8fa;color:#2f435d;font-size:10px;font-weight:850;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+.example-trigger .example-hint{font-size:10px;font-weight:700;letter-spacing:.02em;text-transform:none;color:#5f6f82}
+.example-body{display:none;border-top:1px solid #bfc8d3;background:#eef1f4}
+.example-wrap:hover .example-body,.example-wrap:focus-within .example-body,.example-wrap.open .example-body{display:block}
+.example-wrap:hover .example-trigger,.example-wrap:focus-within .example-trigger,.example-wrap.open .example-trigger{background:#d4dae2}
+.example-wrap:hover .example-chip,.example-wrap:focus-within .example-chip,.example-wrap.open .example-chip{background:#fff;border-color:#99a6b5}
+.equation.example{margin-top:0;background:#eef1f4;border-top:0;border-bottom:0}
+.example-note{padding:0 16px 12px;font-size:10px;line-height:1.5;color:#5f6f82;background:#eef1f4}
+@media(max-width:650px){
+  .example-wrap{margin:9px 10px 13px 10px}
+  .example-trigger{padding:9px 10px;flex-wrap:wrap}
+  .example-note{padding:0 10px 11px}
+}
+
+.equation-numbered{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:14px;
+}
+.equation-numbered .equation-number{
+  padding-right:16px;
+  font-family:"Times New Roman",serif;
+  font-size:16px;
+  color:#23364f;
+  white-space:nowrap;
+}
+.equation-numbered .equation{
+  border-top:0;
+  border-bottom:0;
+  margin:0;
+}
+@media(max-width:650px){
+  .equation-numbered{
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:8px;
+  }
+  .equation-numbered .equation-number{
+    padding-right:10px;
+    font-size:14px;
+  }
+}
+
+.source-note{
+  display:inline-block;
+  margin-left:3px;
+  vertical-align:super;
+  line-height:1
+}
+.source-note button{
+  border:0;
+  background:transparent;
+  color:#b36b00;
+  padding:0 2px;
+  font:inherit;
+  font-weight:900;
+  font-size:13px;
+  cursor:pointer;
+  line-height:1
+}
+.source-note button:focus-visible{
+  outline:2px solid rgba(179,107,0,.35);
+  outline-offset:2px;
+  border-radius:3px
+}
+.source-floating-tooltip{
+  position:fixed;
+  width:min(390px,calc(100vw - 32px));
+  padding:11px 13px;
+  border-radius:10px;
+  border:1px solid #e4b766;
+  background:#fff7e8;
+  color:#704500;
+  font-size:11px;
+  line-height:1.5;
+  box-shadow:0 14px 32px rgba(65,45,10,.18);
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .14s ease, transform .14s ease, visibility .14s ease;
+  transform:translateY(4px);
+  z-index:9999;
+  text-align:left
+}
+.source-floating-tooltip.open{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transform:translateY(0)
+}
+.source-floating-tooltip strong{color:#6a4200}
+.cbo-source-note:hover .cbo-source-tooltip,
+  .cbo-source-note:focus-within .cbo-source-tooltip,
+  .cbo-source-note.open .cbo-source-tooltip{transform:translateY(0)}
+  .cbo-source-tooltip:before{left:auto;right:11px;transform:rotate(45deg)}
+}
+
+</style>
+</head>
+<body>
+<header>
+  <div class="head">
+    <div class="brand"><h1>Social Security Solvency Simulator</h1><p>Methodology &amp; technical documentation</p></div>
+    <div class="head-actions"><div class="badge">Version 1.0</div><a class="header-btn" href="index.html">← Back to simulator</a></div>
+  </div>
+</header>
+
+<div class="shell">
+  <section class="hero">
+    <div class="eyebrow">Technical documentation</div>
+    <h2>Methodology</h2>
+    <p>This page documents the equations, calibrations, data sources, and simplifying assumptions used by the Social Security Solvency Simulator. Equations follow conventional economic notation. For each equation, every symbol is defined immediately before the expression. Numerical assumptions are classified as direct source values, values derived from source data, or model choices.</p>
+  </section>
+
+  <div class="layout">
+    <aside class="toc" aria-label="Methodology contents">
+      <div class="toc-title">Contents</div>
+      <nav id="tocNav">
+        <a href="#overview">1. Scope &amp; sources</a>
+        <a href="#demographics">2. Demographic engine</a>
+        <a href="#workers">3. Workers &amp; beneficiaries</a>
+        <a href="#retirement">4. Retirement age</a>
+        <a href="#economy">5. Economic assumptions</a>
+        <a href="#revenue">6. Revenue</a>
+        <a href="#benefits">7. Benefits</a>
+        <a href="#funds">8. Trust funds</a>
+        <a href="#actuarial">9. Actuarial balance</a>
+        <a href="#debt">10. Public debt</a>
+        <a href="#stabilizers">11. Stabilizers</a>
+        <a href="#funded">12. Funded accounts</a>
+        <a href="#swf">13. Sovereign wealth fund</a>
+        <a href="#validation">14. Validation targets</a>
+        <a href="#sources">15. Source tables</a>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <section class="card" id="overview">
+        <div class="kicker">1 · Scope &amp; sources</div>
+        <h2>Model scope and source classification</h2>
+        <p class="lead">The simulator projects annual outcomes for 2026–2100. That horizon is chosen to match the 2026 Trustees Report's 75-year long-range valuation period.</p>
+        <div class="grid2">
+          <div class="mini"><b><span class="tag direct">Direct source value</span></b><span>A number directly copied from a Social Security Administration report or another reputable source.</span></div>
+          <div class="mini"><b><span class="tag derived">Derived calibration</span></b><span>A number calculated from published source values to create or calibrate a model input.</span></div>
+          <div class="mini"><b><span class="tag choice">Model choice</span></b><span>A simplifying assumption, policy-design default, or tuning parameter selected for this simulator rather than reported by an official source.</span></div>
+        </div>
+        <div class="callout"><strong>Notation.</strong> Calendar years are indexed by \(t\), with \(t_0=2026\). Ages are indexed by \(a\), income groups by \(g\), and demographic scenarios by \(s\). Dollar variables are real 2026 dollars unless otherwise noted.</div>
+      </section>
+
+      <section class="card" id="demographics">
+        <div class="kicker">2 · Demographic engine</div>
+        <h2>Population, working-age population, and retirement-age population</h2>
+        <p>All demographic scenarios begin from the same 2026 baseline population from the <a href="https://population.un.org/wpp/">United Nations World Population Prospects 2024</a>. The United Nations data is used because it provides a detailed population distribution by single year of age, which is a key input required by the simulator and is not available in a comparable form from sources such as the Social Security Administration's Trustees Reports. Using a common starting population also holds the initial age structure constant across scenarios, so differences after 2026 reflect alternative assumptions about fertility, life expectancy, and immigration rather than differences in the initial population estimates.</p>
+
+        <p>Population paths after 2026 are constructed in two ways. The United Nations scenarios use the corresponding World Population Prospects 2024 year-by-year population-by-age projections directly. The SSA, CBO, and Census scenarios are reconstructed in <a href="https://www.avenirhealth.org/software-spectrum.html">Spectrum/DemProj</a> using the same UN WPP 2024 population baseline for 2026 together with the demographic assumptions published by each institution.</p>
+
+        <h3>Demographic scenario sources</h3>
+        <div class="tablewrap"><table class="table">
+          <thead><tr><th>Scenario</th><th>Source basis</th></tr></thead>
+          <tbody>
+            <tr><td>SSA Intermediate</td><td><a href="https://www.ssa.gov/oact/TR/2026/lr5a1.html">Trustees Table V.A1</a> (fertility), <a href="https://www.ssa.gov/oact/TR/2026/lr5a2.html">Table V.A2</a> (immigration), and <a href="https://www.ssa.gov/oact/TR/2026/lr5a4.html">Table V.A4</a> (period life expectancy)</td></tr>
+            <tr><td>SSA Low Cost</td><td><a href="https://www.ssa.gov/oact/TR/2026/lr5a1.html">Trustees Table V.A1</a>, <a href="https://www.ssa.gov/oact/TR/2026/lr5a2.html">Table V.A2</a>, and <a href="https://www.ssa.gov/oact/TR/2026/lr5a4.html">Table V.A4</a></td></tr>
+            <tr><td>SSA High Cost</td><td><a href="https://www.ssa.gov/oact/TR/2026/lr5a1.html">Trustees Table V.A1</a>, <a href="https://www.ssa.gov/oact/TR/2026/lr5a2.html">Table V.A2</a>, and <a href="https://www.ssa.gov/oact/TR/2026/lr5a4.html">Table V.A4</a></td></tr>
+            <tr><td>Congressional Budget Office<span class="source-note"><button type="button" id="cboNoteButton" aria-label="CBO projection extension note" aria-expanded="false" aria-describedby="cboFloatingTooltip">*</button></span></td><td><a href="https://www.cbo.gov/publication/61994">CBO, <em>The Demographic Outlook: 2026 to 2056</em></a></td></tr>
+            <tr><td>U.S. Census Bureau<span class="source-note"><button type="button" id="censusNoteButton" aria-label="Census immigration assumption note" aria-expanded="false" aria-describedby="censusFloatingTooltip">*</button></span></td><td><a href="https://www.census.gov/data-tools/demo/idb/">Census International Database (IDB)</a>, December 2025 U.S. update</td></tr>
+            <tr><td>United Nations Median</td><td><a href="https://population.un.org/wpp/">UN World Population Prospects 2024</a></td></tr>
+            <tr><td>United Nations Low Fertility</td><td><a href="https://population.un.org/wpp/">UN World Population Prospects 2024</a></td></tr>
+            <tr><td>United Nations High Fertility</td><td><a href="https://population.un.org/wpp/">UN World Population Prospects 2024</a></td></tr>
+            <tr><td>United Nations No Immigration</td><td><a href="https://population.un.org/wpp/">UN World Population Prospects 2024</a></td></tr>
+            <tr><td>United Nations Constant Mortality</td><td><a href="https://population.un.org/wpp/">UN World Population Prospects 2024</a></td></tr>
+          </tbody>
+        </table></div>
+<p>The selected retirement age is used as the dividing point between the working-side population and the retirement-side population.</p>
+
+        <div class="eq-card">
+          <div class="eq-head">Population split at the retirement-age boundary</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(P^{(s)}_{a,t}\)</dt><dd>Population of age \(a\) in year \(t\) under demographic scenario \(s\).</dd></div>
+            <div class="vars-row"><dt>\(R_t\)</dt><dd>Retirement age used by the model in year \(t\).</dd></div>
+            <div class="vars-row"><dt>\(k_t=\lfloor R_t\rfloor\)</dt><dd>Integer component of the retirement age.</dd></div>
+            <div class="vars-row"><dt>\(\phi_t=R_t-k_t\)</dt><dd>Fractional component of the retirement age, with \(0\leq\phi_t&lt;1\).</dd></div>
+            <div class="vars-row"><dt>\(W^{pop}_t\)</dt><dd>Population on the working side of the age boundary.</dd></div>
+            <div class="vars-row"><dt>\(N^{ret}_t\)</dt><dd>Population on the retirement side of the age boundary.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          W^{pop}_t=\sum_{a=20}^{k_t-1}P^{(s)}_{a,t}+\phi_tP^{(s)}_{k_t,t}
+          
+          \]</div><div class="equation-number">(1)</div></div>
+          <div class="equation-numbered"><div class="equation">\[
+          N^{ret}_t=(1-\phi_t)P^{(s)}_{k_t,t}+\sum_{a=k_t+1}^{100}P^{(s)}_{a,t}
+          
+          \]</div><div class="equation-number">(2)</div></div>
+          
+        </div>
+      </section>
+
+      <section class="card" id="workers">
+        <div class="kicker">3 · Workers &amp; beneficiaries</div>
+        <h2>Calibration from population counts to program counts</h2>
+        <p>Raw age counts are not treated as covered workers or beneficiaries one-for-one. For each selected demographic scenario, the simulator recalibrates conversion factors in 2026 so the model exactly matches the Trustees Report's 2026 covered-worker and beneficiary counts.</p>
+
+        <p>Calibration is necessary because demographic age groups do not map perfectly onto Social Security program participation. Not everyone claims retirement benefits at the full retirement age; some beneficiaries claim earlier, while others claim later. Likewise, not every working-age adult is a covered Social Security worker. Some occupations are outside Social Security coverage, and some adults may be outside the labor force, including students or others who are not currently employed. These differences are important when translating population counts into modeled worker and beneficiary counts.</p>
+
+        <div class="eq-card">
+          <div class="eq-head">Covered workers and OASI beneficiaries</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(C_{2026}^{SSA}\)</dt><dd>2026 covered workers reported by SSA: 184.803 million.</dd></div>
+            <div class="vars-row"><dt>\(B_{2026}^{O,SSA}\)</dt><dd>2026 OASI beneficiaries reported by SSA: 63.232 million.</dd></div>
+            <div class="vars-row"><dt>\(W^{pop}_{2026}\)</dt><dd>Scenario-specific working-side population from equation (1).</dd></div>
+            <div class="vars-row"><dt>\(N^{ret}_{2026}\)</dt><dd>Scenario-specific retirement-side population from equation (2).</dd></div>
+            <div class="vars-row"><dt>\(\alpha_C\)</dt><dd>Scenario-specific conversion factor from working-side population to covered workers.</dd></div>
+            <div class="vars-row"><dt>\(\alpha_O\)</dt><dd>Scenario-specific conversion factor from retirement-side population to OASI beneficiaries.</dd></div>
+            <div class="vars-row"><dt>\(C_t\)</dt><dd>Modeled covered workers in year \(t\).</dd></div>
+            <div class="vars-row"><dt>\(B_t^O\)</dt><dd>Modeled OASI beneficiaries in year \(t\).</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          \alpha_C=\frac{C_{2026}^{SSA}}{W^{pop}_{2026}},\qquad
+          \alpha_O=\frac{B_{2026}^{O,SSA}}{N^{ret}_{2026}}
+          
+          \]</div><div class="equation-number">(3)</div></div>
+          <div class="equation-numbered"><div class="equation">\[
+          C_t=\alpha_C W^{pop}_t,\qquad B_t^O=\alpha_O N^{ret}_t
+          
+          \]</div><div class="equation-number">(4)</div></div>
+          <div class="eq-note"><span class="tag direct">Direct SSA</span> The calibration targets come from <a href="https://www.ssa.gov/oact/TR/2026/lr4b4.html">2026 Trustees Report, Table IV.B4</a>.</div>
+        </div>
+
+        <div class="eq-card">
+          <div class="eq-head">DI beneficiary approximation</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(B_{2026}^{D,SSA}\)</dt><dd>2026 DI beneficiaries reported by SSA: 8.102 million.</dd></div>
+            <div class="vars-row"><dt>\(A_t\)</dt><dd>Adult population in the simplified engine, \(A_t=W^{pop}_t+N^{ret}_t\).</dd></div>
+            <div class="vars-row"><dt>\(\alpha_{DR}\)</dt><dd>2026 DI beneficiaries divided by the retirement-side population.</dd></div>
+            <div class="vars-row"><dt>\(\alpha_{DA}\)</dt><dd>2026 DI beneficiaries divided by total adult population.</dd></div>
+            <div class="vars-row"><dt>\(B_t^D\)</dt><dd>Modeled DI beneficiaries.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          \alpha_{DR}=\frac{B_{2026}^{D,SSA}}{N^{ret}_{2026}},\qquad
+          \alpha_{DA}=\frac{B_{2026}^{D,SSA}}{A_{2026}}
+          
+          \]</div><div class="equation-number">(5)</div></div>
+          <div class="equation-numbered"><div class="equation">\[
+          B_t^D=\frac{1}{2}\alpha_{DR}N^{ret}_t+\frac{1}{2}\alpha_{DA}A_t
+          
+          \]</div><div class="equation-number">(6)</div></div>
+          <div class="eq-note"><span class="tag choice">Model choice</span> The 50/50 blend is a parsimonious approximation that makes DI respond partly to the retirement-side population and partly to the broader adult population.</div>
+        </div>
+      </section>
+
+      <section class="card" id="retirement">
+        <div class="kicker">4 · Retirement age</div>
+        <h2>Scheduled increases and longevity indexing</h2>
+        <p>The model's base retirement age is set at 67 since that is the full retirement age under current law. A user-specified increase can be phased in and, optionally, the resulting age can continue to move one-for-one with the selected life-expectancy series.</p>
+
+        <div class="eq-card">
+          <div class="eq-head">Manual retirement-age phase-in</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(R_0\)</dt><dd>Baseline retirement age, fixed at 67 in the simulator.</dd></div>
+            <div class="vars-row"><dt>\(\Delta R\)</dt><dd>User-selected increase in years.</dd></div>
+            <div class="vars-row"><dt>\(t_R\)</dt><dd>Start year of the retirement-age reform.</dd></div>
+            <div class="vars-row"><dt>\(H_R\)</dt><dd>Phase-in length in years.</dd></div>
+            <div class="vars-row"><dt>\(\lambda_t^R\)</dt><dd>Share of the scheduled retirement-age increase implemented by year \(t\), bounded between 0 and 1.</dd></div>
+            <div class="vars-row"><dt>\(R_t^{M}\)</dt><dd>Manual retirement-age path before longevity indexing or stabilizer adjustments.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          \lambda_t^R=
+          \min\left\{1,\,
+          \max\left\{0,\frac{t-t_R+1}{H_R}\right\}
+          \right\}
+          
+          \]</div><div class="equation-number">(7a)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger">
+              <span class="example-chip">Illustrative Example</span>
+              <span class="example-hint">Hover or click to show an illustrative numerical substitution</span>
+            </div>
+            <div class="example-body">
+              <div class="equation example">\[
+          \lambda_{2039}^R=
+\min\left\{1,\max\left\{0,\frac{2039-2030+1}{20}\right\}\right\}
+=0.50
+          \]</div>
+          <div class="example-note">Policy settings used in this example: raise the retirement age by 2 years, begin the change in 2030, and phase it in over 20 years. By 2039, 50% of the scheduled increase has been implemented.</div>
+            </div>
+          </div>
+          <div class="equation-numbered"><div class="equation">\[
+          R_t^{M}=R_0+\Delta R\,\lambda_t^R
+          
+          \]</div><div class="equation-number">(7b)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger">
+              <span class="example-chip">Illustrative Example</span>
+              <span class="example-hint">Hover or click to show an illustrative numerical substitution</span>
+            </div>
+            <div class="example-body">
+              <div class="equation example">\[
+          R_{2039}^{M}=67+2(0.50)=68.0
+          \]</div>
+          <div class="example-note">Policy settings used in this example: baseline retirement age = 67; scheduled increase = 2 years; implementation share in 2039 = 50%. The resulting retirement age is 68.</div>
+            </div>
+          </div>
+          <div class="eq-note"><span class="tag direct">Current-law reference</span> The current age-67 full retirement age is documented in <a href="https://www.ssa.gov/OACT/TR/2026/V_C_prog.html">2026 Trustees Report, Table V.C3</a>.</div>
+        </div>
+
+        <div class="eq-card">
+          <div class="eq-head">Longevity-indexed retirement age</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(LE_t^{(s)}\)</dt><dd>Period life-expectancy index for the selected demographic scenario.</dd></div>
+            <div class="vars-row"><dt>\(t_I\)</dt><dd>Year in which longevity indexing begins after any manual phase-in.</dd></div>
+            <div class="vars-row"><dt>\(R_t^{L}\)</dt><dd>Retirement age after longevity indexing.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          R_t^{L}=R_t^{M}+\left(LE_t^{(s)}-LE_{t_I}^{(s)}\right),\qquad t\ge t_I
+          
+          \]</div><div class="equation-number">(8)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger">
+              <span class="example-chip">Illustrative Example</span>
+              <span class="example-hint">Hover or click to show an illustrative numerical substitution</span>
+            </div>
+            <div class="example-body">
+              <div class="equation example">\[
+          R_{2050}^{L}=69.0+(79.8-79.5)=69.3
+          \]</div>
+          <div class="example-note">Policy settings used in this example: manual retirement-age target = 69; longevity indexing is enabled; the selected life-expectancy index rises from 79.5 to 79.8 years. The 0.3-year increase is added to the retirement age, producing 69.3.</div>
+            </div>
+          </div>
+          <div class="eq-note">The SSA life-expectancy index is constructed from the period life-expectancy projections in <a href="https://www.ssa.gov/oact/TR/2026/lr5a4.html">Table V.A4</a>. Life expectancies for other scenarios are taken from their respective sources. Longevity indexing is disabled for the United Nations Constant Mortality scenario.</div>
+        </div>
+      </section>
+
+      <section class="card" id="economy">
+        <div class="kicker">5 · Economic assumptions</div>
+        <h2>Real payroll, inflation, and interest rates</h2>
+        <p>The core model uses constant real growth and interest assumptions unless the user changes them. The default values are 1.14 percent real payroll growth and 2.3 percent real interest. These are taken from the Trustees' long-run intermediate assumptions.</p>
+
+        <div class="eq-card">
+          <div class="eq-head">Real payroll per covered worker</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(y_t\)</dt><dd>Real payroll per covered worker in year \(t\).</dd></div>
+            <div class="vars-row"><dt>\(y_0\)</dt><dd>2026 payroll-per-worker calibration, $71,994.61.</dd></div>
+            <div class="vars-row"><dt>\(g_y\)</dt><dd>Annual real payroll growth rate; baseline 1.14 percent.</dd></div>
+            <div class="vars-row"><dt>\(n_t=t-2026\)</dt><dd>Number of annual growth intervals after 2026.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          y_t=y_0(1+g_y)^{n_t}
+          
+          \]</div><div class="equation-number">(9)</div></div>
+          <div class="eq-note"><span class="tag derived">Derived calibration</span> \(y_0\) is derived from SSA's 2026 taxable payroll, covered-worker count, and the model's 83 percent taxable-share assumption. The derivation is shown in the calibration ledger. <span class="tag direct">SSA assumption</span> \(g_y=1.14\%\) is the Trustees' ultimate intermediate real covered-wage growth assumption in Table II.C1.</div>
+        </div>
+
+        <div class="callout warn"><strong>Near-term simplification.</strong> Table II.C1 states that its long-range assumptions generally apply to 2036–2100. The simulator's default uses the 1.14 percent real wage-growth rate and 2.3 percent real interest rate from the start of the 2026 projection.</div>
+      </section>
+
+      <section class="card" id="revenue">
+        <div class="kicker">6 · Revenue</div>
+        <h2>Taxable payroll, payroll taxes, and taxation of benefits</h2>
+
+        <div class="eq-card">
+          <div class="eq-head">Taxable payroll</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(s_t\)</dt><dd>Share of modeled payroll subject to the OASDI payroll tax; baseline 0.83.</dd></div>
+            <div class="vars-row"><dt>\(y_t\)</dt><dd>Real payroll per covered worker.</dd></div>
+            <div class="vars-row"><dt>\(C_t\)</dt><dd>Covered workers.</dd></div>
+            <div class="vars-row"><dt>\(TP_t\)</dt><dd>Modeled taxable payroll.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          TP_t=s_t y_t C_t
+          
+          \]</div><div class="equation-number">(10)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger">
+              <span class="example-chip">Illustrative Example</span>
+              <span class="example-hint">Hover or click to show an illustrative numerical substitution</span>
+            </div>
+            <div class="example-body">
+              <div class="equation example">\[
+          TP_t=0.90(\$80{,}000)(190{,}000{,}000)
+=\$13.68\text{ trillion}
+          \]</div>
+          <div class="example-note">Policy settings used in this example: raise the share of payroll subject to the taxable maximum to 90%; real payroll per worker = $80,000; covered workers = 190 million. These inputs produce $13.68 trillion of taxable payroll.</div>
+            </div>
+          </div>
+          <div class="eq-note"><span class="tag choice">Simplifying assumption</span> The baseline 83 percent share is held constant unless the user changes it. See <a href="https://www.ssa.gov/OACT/TR/2026/V_C_prog.html">2026 Trustees Report, Section V.C, taxable-ratio discussion</a>.</div>
+        </div>
+
+        <div class="eq-card">
+          <div class="eq-head">Scheduled payroll-tax phase-in</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(\tau_0^O\)</dt><dd>Baseline OASI payroll-tax rate, 10.6 percent.</dd></div>
+            <div class="vars-row"><dt>\(\tau^{O*}\)</dt><dd>User-selected OASI payroll-tax rate.</dd></div>
+            <div class="vars-row"><dt>\(t_\tau\)</dt><dd>User-selected year in which the payroll-tax change begins.</dd></div>
+            <div class="vars-row"><dt>\(H_\tau\)</dt><dd>User-selected payroll-tax phase-in period in years.</dd></div>
+            <div class="vars-row"><dt>\(\lambda_t^\tau\)</dt><dd>Share of the scheduled payroll-tax change implemented in year \(t\), bounded between 0 and 1.</dd></div>
+            <div class="vars-row"><dt>\(\tau_t^{O,sch}\)</dt><dd>Scheduled OASI payroll-tax rate before any automatic-stabilizer adjustment.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          \lambda_t^\tau=\min\left\{1,\max\left\{0,\frac{t-t_\tau+1}{H_\tau}\right\}\right\}
+          \]</div><div class="equation-number">(11a)</div></div>
+          <div class="equation-numbered"><div class="equation">\[
+          \tau_t^{O,sch}=\tau_0^O+(\tau^{O*}-\tau_0^O)\lambda_t^\tau
+          \]</div><div class="equation-number">(11b)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger"><span class="example-chip">Illustrative Example</span><span class="example-hint">Hover or click to show an illustrative numerical substitution</span></div>
+            <div class="example-body"><div class="equation example">\[
+            \lambda_{2034}^\tau=\frac{2034-2030+1}{10}=0.50,\qquad
+            \tau_{2034}^{O,sch}=0.106+(0.126-0.106)(0.50)=0.116
+            \]</div><div class="example-note">Policy settings used in this example: raise the OASI payroll-tax rate from 10.6% to 12.6%, begin the change in 2030, and phase it in over 10 years. In 2034, half of the increase has been implemented and the scheduled rate is 11.6%.</div></div>
+          </div>
+        </div>
+
+        <div class="eq-card">
+          <div class="eq-head">OASI payroll-tax revenue</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(\tau_t^O\)</dt><dd>Effective OASI payroll-tax rate in the simulator after any scheduled reform and stabilizer adjustment; baseline 10.6 percent.</dd></div>
+            <div class="vars-row"><dt>\(TP_t\)</dt><dd>Modeled taxable payroll from equation (10).</dd></div>
+            <div class="vars-row"><dt>\(\kappa_\tau\)</dt><dd>Payroll-revenue calibration factor, 0.9965333.</dd></div>
+            <div class="vars-row"><dt>\(T_t^O\)</dt><dd>OASI payroll-tax revenue.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          T_t^O=\kappa_\tau\tau_t^O TP_t
+          
+          \]</div><div class="equation-number">(11c)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger">
+              <span class="example-chip">Illustrative Example</span>
+              <span class="example-hint">Hover or click to show an illustrative numerical substitution</span>
+            </div>
+            <div class="example-body">
+              <div class="equation example">\[
+          T_t^O=(0.9965333)(0.12)(\$13.68\text{ trillion})
+\approx \$1.636\text{ trillion}
+          \]</div>
+          <div class="example-note">Policy settings used in this example: OASI payroll-tax rate = 12%; taxable payroll = $13.68 trillion; payroll calibration factor = 0.9965333. These inputs produce approximately $1.636 trillion of OASI payroll-tax revenue.</div>
+            </div>
+          </div>
+          <div class="eq-note"><span class="tag direct">Direct SSA</span> The 10.6 percent OASI rate is in <a href="https://www.ssa.gov/OACT/TR/2026/V_C_prog.html">Table V.C6</a>. <span class="tag derived">Derived calibration</span> \(\kappa_\tau\) makes the simplified 2026 calculation match the Trustees' $1.1665 trillion of projected OASI net payroll-tax contributions in <a href="https://www.ssa.gov/oact/TR/2026/IV_A_SRest.html">Table IV.A1</a>.</div>
+        </div>
+
+        <div class="eq-card">
+          <div class="eq-head">Benefit credit for newly taxable earnings</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(s_0\)</dt><dd>Baseline taxable-payroll share, 0.83.</dd></div>
+            <div class="vars-row"><dt>\(s_t\)</dt><dd>User-selected taxable-payroll share in year \(t\).</dd></div>
+            <div class="vars-row"><dt>\(c^*\)</dt><dd>User-selected benefit-credit rate applied to newly taxable earnings.</dd></div>
+            <div class="vars-row"><dt>\(H_c\)</dt><dd>User-selected credit phase-in period.</dd></div>
+            <div class="vars-row"><dt>\(c_t\)</dt><dd>Effective benefit-credit rate in year \(t\).</dd></div>
+            <div class="vars-row"><dt>\(B_{M,t}^O\)</dt><dd>Modeled OASI beneficiaries in the Maximum Taxable Income group.</dd></div>
+            <div class="vars-row"><dt>\(A_t^c\)</dt><dd>Additional annual benefit assigned to each Maximum Taxable Income beneficiary.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          c_t=c^*\min\left\{1,\max\left\{0,\frac{t-2026+1}{H_c}\right\}\right\}
+          \]</div><div class="equation-number">(11d)</div></div>
+          <div class="equation-numbered"><div class="equation">\[
+          A_t^c=\frac{y_tC_t(s_t-s_0)c_t}{B_{M,t}^O}
+          \]</div><div class="equation-number">(11e)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger"><span class="example-chip">Illustrative Example</span><span class="example-hint">Hover or click to show an illustrative numerical substitution</span></div>
+            <div class="example-body"><div class="equation example">\[
+            A_t^c=\frac{(\$80{,}000)(190\text{M})(0.90-0.83)(0.15)}{9.5\text{M}}
+            \approx \$16{,}800
+            \]</div><div class="example-note">Policy settings used in this example: raise the taxable-payroll share from 83% to 90%, credit 15% of the newly taxable earnings after the credit is fully phased in, and assume 9.5 million beneficiaries in the Maximum Taxable Income group. The resulting illustrative annual benefit credit is about $16,800 per beneficiary.</div></div>
+          </div>
+          <div class="eq-note">When this option is disabled, newly taxable earnings increase payroll-tax revenue but do not increase modeled benefits. When enabled, the credit is added only to the Maximum Taxable Income group's benefit.</div>
+        </div>
+
+        <div class="eq-card">
+          <div class="eq-head">DI payroll-tax revenue</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(\tau^D\)</dt><dd>DI payroll-tax rate, fixed at 1.8 percent in the current model.</dd></div>
+            <div class="vars-row"><dt>\(TP_t\)</dt><dd>Modeled taxable payroll.</dd></div>
+            <div class="vars-row"><dt>\(T_t^D\)</dt><dd>DI payroll-tax revenue.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          T_t^D=\tau^D TP_t
+          
+          \]</div><div class="equation-number">(12)</div></div>
+          <div class="eq-note"><span class="tag direct">Direct SSA</span> The 1.8 percent DI rate is in <a href="https://www.ssa.gov/OACT/TR/2026/V_C_prog.html">Table V.C6</a>.</div>
+        </div>
+
+        <div class="eq-card">
+          <div class="eq-head">Revenue from taxation of OASI benefits</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(\theta_t\)</dt><dd>Model-implied fraction of OASI benefit spending returned to the trust fund through taxation of benefits.</dd></div>
+            <div class="vars-row"><dt>\(E_t^O\)</dt><dd>OASI benefit spending.</dd></div>
+            <div class="vars-row"><dt>\(T_t^{BT}\)</dt><dd>OASI trust-fund revenue from taxation of benefits.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          T_t^{BT}=\theta_t E_t^O
+          
+          \]</div><div class="equation-number">(13)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger">
+              <span class="example-chip">Illustrative Example</span>
+              <span class="example-hint">Hover or click to show an illustrative numerical substitution</span>
+            </div>
+            <div class="example-body">
+              <div class="equation example">\[
+          T_t^{BT}=0.05(\$1.80\text{ trillion})
+=\$90\text{ billion}
+          \]</div>
+          <div class="example-note">Policy settings used in this example: tax revenue from benefits = 5% of OASI benefit spending; OASI benefit spending = $1.80 trillion. The resulting benefit-tax revenue is $90 billion.</div>
+            </div>
+          </div>
+          <div class="eq-note">The starting value \(\theta_{2026}=3.97\%\) is a <span class="tag derived">derived calibration</span>, calculated from approximately $60.0 billion of 2026 OASI taxation-of-benefits revenue divided by modeled 2026 OASI benefit spending. The $60.0 billion starting value is reported in <a href="https://www.ssa.gov/oact/TR/2026/IV_A_SRest.html">Table IV.A1</a>. The benefit-tax revenue path then rises over time to reflect the Social Security Administration's long-run projection. Under the intermediate assumptions, <a href="https://www.ssa.gov/oact/TR/2026/lr4b2.html">Table IV.B2</a> reports OASI taxation-of-benefits income equal to 1.03 percent of taxable payroll in 2100.</div>
+        </div>
+      </section>
+
+      <section class="card" id="benefits">
+        <div class="kicker">7 · Benefits</div>
+        <h2>Benefit growth, income groups, and program spending</h2>
+        <p>The simulator represents OASI benefits using five pre-retirement income groups. The groups are based on the Social Security Administration's scaled-worker earnings categories and relative replacement-rate structure reported in <a href="https://www.ssa.gov/oact/TR/2026/lr5c7.html">2026 Trustees Report, Table V.C7</a>. The beneficiary shares are calibrated separately from the Social Security Administration's observed distribution of retired-worker monthly benefits in the <a href="https://www.ssa.gov/policy/docs/statcomps/supplement/2026/5j.html">Annual Statistical Supplement, 2026, Table 5.J6</a>. The simulator's 2026 annual benefit anchors are $13,373.18 for Very Low Income, $17,527.01 for Low Income, $23,889.72 for Medium Income, $38,243.47 for High Income, and $46,602.70 for Maximum Taxable Income.</p>
+
+        <h3>Derivation of beneficiary-group shares</h3>
+        <div class="eq-card">
+          <div class="eq-head">Mapping the SSA benefit distribution into model groups</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(c_g\)</dt><dd>Monthly-benefit cutoff separating adjacent model income groups.</dd></div>
+            <div class="vars-row"><dt>\(w_g\)</dt><dd>Estimated share of beneficiaries assigned to model group \(g\).</dd></div>
+            <div class="vars-row"><dt>\(F(b)\)</dt><dd>Cumulative share of retired-worker monthly benefits from Table 5.J6, with proportional allocation when a cutoff falls within a reported benefit range.</dd></div>
+          </dl>
+          <div class="equation-numbered">
+            <div class="equation">\[
+            w_g = F(c_g)-F(c_{g-1})
+            \]</div>
+            <div class="equation-number">(14)</div>
+          </div>
+        </div>
+
+        <div class="tablewrap"><table class="table tight">
+          <thead><tr><th>Model group</th><th>2026 annual benefit anchor</th><th>SSA-distribution calculation</th><th>Estimated share</th><th>Final model weight</th></tr></thead>
+          <tbody>
+            <tr><td>Very Low Income</td><td>$13,373.18</td><td>Below approximately $1,249 per month.</td><td>≈20.3%</td><td>20%</td></tr>
+            <tr><td>Low Income</td><td>$17,527.01</td><td>Approximately $1,249–$1,879 per month.</td><td>≈25.3%</td><td>25%</td></tr>
+            <tr><td>Medium Income</td><td>$23,889.72</td><td>Approximately $1,879–$2,716 per month.</td><td>≈31.6%</td><td>32%</td></tr>
+            <tr><td>High Income</td><td>$38,243.47</td><td>A chosen share of the $3,000+ per month group.</td><td>≈23% combined upper tail</td><td>18%</td></tr>
+            <tr><td>Maximum Taxable Income</td><td>$46,602.70</td><td>A chosen share of the $3,000+ per month group.</td><td>Included in ≈23% combined upper tail</td><td>5%</td></tr>
+          </tbody>
+        </table></div>
+        <div class="callout"><strong>Why the top two groups require judgment.</strong> Table 5.J6 groups all retired workers receiving $3,000 or more per month into one category, so it does not show how that upper tail should be divided between the High Income and Maximum Taxable Income groups. The model therefore tests different splits of the $3,000+ group and selects the allocation that makes the model's aggregate average benefit closest to the observed average benefit. The resulting split is 18% High Income and 5% Maximum Taxable Income.</div>
+
+        <div class="eq-card">
+          <div class="eq-head">Real benefit-growth rule</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(g_y\)</dt><dd>Real payroll/wage growth assumption.</dd></div>
+            <div class="vars-row"><dt>\(\omega\)</dt><dd>Wage-index strength; baseline 0.84.</dd></div>
+            <div class="vars-row"><dt>\(\pi\)</dt><dd>Inflation assumption; default 2.4 percent.</dd></div>
+            <div class="vars-row"><dt>\(\eta\)</dt><dd>Inflation-index strength when the inflation-indexing mode is selected; 1.0 means full inflation protection.</dd></div>
+            <div class="vars-row"><dt>\(g_t^B\)</dt><dd>Real annual growth rate applied to scheduled OASI benefit anchors.</dd></div>
+          </dl>
+          <div class="equation-numbered">
+            <div class="equation">\[
+            g_t^B=
+            \begin{cases}
+            \omega g_y, & \text{wage-index mode},\\[4pt]
+            -\pi(1-\eta), & \text{inflation-index mode}.
+            \end{cases}
+            \]</div>
+            <div class="equation-number">(15)</div>
+          </div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger">
+              <span class="example-chip">Illustrative Example</span>
+              <span class="example-hint">Hover or click to show an illustrative numerical substitution</span>
+            </div>
+            <div class="example-body">
+              <div class="equation example">\[
+          g_t^B=(0.84)(0.0114)=0.009576\approx0.958\%
+\qquad\text{(wage-index mode)}
+          \]</div>
+          <div class="example-note">Policy settings used in this example: real wage growth = 1.14%; wage-index strength = 84%; inflation indexing is not selected. Scheduled real benefit growth is therefore about 0.958%.</div>
+            </div>
+          </div>
+          <div class="eq-note"><span class="tag direct">SSA input</span> The 2.4 percent CPI-W assumption and 1.14 percent real covered-wage growth assumption are in Table II.C1. <span class="tag choice">Model calibration</span> \(\omega=0.84\) was chosen so that long-run benefit costs would roughly align with the Social Security Administration's Intermediate projections, all else held equal.</div>
+        </div>
+
+        <h3>Aggregate and group-specific benefit adjustments</h3>
+        <div class="eq-card">
+          <div class="eq-head">Scheduled benefit-adjustment phase-in</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(d_g\)</dt><dd>User-selected benefit reduction for group \(g\). In Aggregate mode, the same value is applied to every group.</dd></div>
+            <div class="vars-row"><dt>\(t_g^B\)</dt><dd>Benefit-adjustment start year for group \(g\).</dd></div>
+            <div class="vars-row"><dt>\(H_g^B\)</dt><dd>Benefit-adjustment phase-in period for group \(g\).</dd></div>
+            <div class="vars-row"><dt>\(\lambda_{g,t}^B\)</dt><dd>Share of the scheduled adjustment implemented by year \(t\).</dd></div>
+            <div class="vars-row"><dt>\(m_{g,t}^B\)</dt><dd>Benefit multiplier after the scheduled adjustment but before any automatic stabilizer.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          \lambda_{g,t}^B=\min\left\{1,\max\left\{0,\frac{t-t_g^B+1}{H_g^B}\right\}\right\},\qquad
+          m_{g,t}^B=1-d_g\lambda_{g,t}^B
+          \]</div><div class="equation-number">(16a)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger"><span class="example-chip">Illustrative Example</span><span class="example-hint">Hover or click to show an illustrative numerical substitution</span></div>
+            <div class="example-body"><div class="equation example">\[
+            \lambda_{g,2034}^B=\frac{2034-2030+1}{10}=0.50,\qquad
+            m_{g,2034}^B=1-0.20(0.50)=0.90
+            \]</div><div class="example-note">Policy settings used in this example: a 20% benefit reduction begins in 2030 and phases in over 10 years. By 2034, half of the reduction has been implemented, so the affected benefit is 10% below its scheduled level. Aggregate mode applies this path to every group; Group-specific mode allows a different cut, start year, and phase-in period for each of the five income groups.</div></div>
+          </div>
+        </div>
+
+        <div class="eq-card">
+          <div class="eq-head">Group benefit path and weighted average</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(b_{g,t}\)</dt><dd>Annual OASI benefit for income group \(g\) before policy-specific cuts or flattening.</dd></div>
+            <div class="vars-row"><dt>\(w_g\)</dt><dd>Population weight of income group \(g\), with \(\sum_g w_g=1\).</dd></div>
+            <div class="vars-row"><dt>\(m_{g,t}\)</dt><dd>Policy multiplier applied to group \(g\) in year \(t\), including any group-specific or aggregate benefit adjustment and the benefit stabilizer.</dd></div>
+            <div class="vars-row"><dt>\(\bar b_t^O\)</dt><dd>Weighted average annual OASI benefit per modeled OASI beneficiary.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          b_{g,t}=b_{g,t-1}(1+g_t^B)
+          
+          \]</div><div class="equation-number">(16)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger">
+              <span class="example-chip">Illustrative Example</span>
+              <span class="example-hint">Hover or click to show an illustrative numerical substitution</span>
+            </div>
+            <div class="example-body">
+              <div class="equation example">\[
+          b_{g,t}=\$30{,}000(1+0.009576)
+=\$30{,}287.28
+          \]</div>
+          <div class="example-note">Policy settings used in this example: prior-year annual benefit = $30,000; scheduled real benefit growth = 0.9576%; no additional benefit cut is applied in this step. The new annual benefit is $30,287.28.</div>
+            </div>
+          </div>
+          <div class="equation-numbered"><div class="equation">\[
+          \bar b_t^O=\sum_g w_g m_{g,t}b_{g,t}
+          
+          \]</div><div class="equation-number">(17)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger">
+              <span class="example-chip">Illustrative Example</span>
+              <span class="example-hint">Hover or click to show an illustrative numerical substitution</span>
+            </div>
+            <div class="example-body">
+              <div class="equation example">\[
+          \begin{aligned}
+\bar b_t^O={}&
+0.20(1.00)(\$14{,}000)
++0.25(1.00)(\$18{,}000)\\
+&+0.32(0.95)(\$24{,}000)
++0.18(0.90)(\$31{,}000)
++0.05(0.85)(\$40{,}000)\\
+={}&\$21{,}315.20
+\end{aligned}
+          \]</div>
+          <div class="example-note">Policy settings used in this example: Very Low Income receives no cut; Low Income receives no cut; Medium Income receives a 5% benefit cut; High Income receives a 10% benefit cut; Maximum Taxable Income receives a 15% benefit cut. Illustrative annual scheduled benefits are $14,000, $18,000, $24,000, $31,000, and $40,000, respectively, with group weights of 20%, 25%, 32%, 18%, and 5%. The weighted average benefit is $21,315.20.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eq-card">
+          <div class="eq-head">OASI benefit spending</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(\bar b_t^O\)</dt><dd>Weighted average OASI benefit per beneficiary.</dd></div>
+            <div class="vars-row"><dt>\(B_t^O\)</dt><dd>Modeled OASI beneficiaries.</dd></div>
+            <div class="vars-row"><dt>\(E_t^O\)</dt><dd>Modeled OASI benefit spending.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          E_t^O=\bar b_t^O B_t^O
+          
+          \]</div><div class="equation-number">(18)</div></div>
+        </div>
+
+        <h3>Flatten-benefits mode</h3>
+        <div class="eq-card">
+          <div class="eq-head">Convergence of higher-income benefits toward a protected group</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(g^*\)</dt><dd>Highest income group protected from flattening.</dd></div>
+            <div class="vars-row"><dt>\(\lambda^{max}\)</dt><dd>User-selected maximum share of the benefit gap that can be closed.</dd></div>
+            <div class="vars-row"><dt>\(t_F\)</dt><dd>User-selected flattening start year.</dd></div>
+            <div class="vars-row"><dt>\(H_F\)</dt><dd>User-selected flattening phase-in period.</dd></div>
+            <div class="vars-row"><dt>\(\lambda_t\)</dt><dd>Fraction of the benefit gap closed in year \(t\), after phase-in and the user's maximum-flattening setting.</dd></div>
+            <div class="vars-row"><dt>\(b_{g,t}\)</dt><dd>Scheduled group benefit before flattening.</dd></div>
+            <div class="vars-row"><dt>\(b^{F}_{g,t}\)</dt><dd>Benefit after flattening, before any funded-account payout.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          \lambda_t=\lambda^{max}\min\left\{1,\max\left\{0,\frac{t-t_F+1}{H_F}\right\}\right\}
+          \]</div><div class="equation-number">(19a)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger"><span class="example-chip">Illustrative Example</span><span class="example-hint">Hover or click to show an illustrative numerical substitution</span></div>
+            <div class="example-body"><div class="equation example">\[
+            \lambda_{2034}=0.50\left(\frac{2034-2030+1}{10}\right)=0.25
+            \]</div><div class="example-note">Policy settings used in this example: Flatten Benefits begins in 2030, phases in over 10 years, and can close at most 50% of the gap above the protected group's benefit. In 2034, the effective flattening strength is 25% of the gap.</div></div>
+          </div>
+          <div class="equation-numbered"><div class="equation">\[
+          b^{F}_{g,t}=
+          \begin{cases}
+          b_{g,t}, & g\le g^*,\\[4pt]
+          b_{g,t}-\lambda_t\max\!\left(0,b_{g,t}-b_{g^*,t}\right), & g&gt;g^*.
+          \end{cases}
+          
+          \]</div><div class="equation-number">(19b)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger">
+              <span class="example-chip">Illustrative Example</span>
+              <span class="example-hint">Hover or click to show an illustrative numerical substitution</span>
+            </div>
+            <div class="example-body">
+              <div class="equation example">\[
+          b_{H,t}^{F}
+=\$31{,}000-0.50\max\{0,\$31{,}000-\$24{,}000\}
+=\$27{,}500
+          \]</div>
+          <div class="example-note">Policy settings used in this example: Flatten Benefits is enabled; Medium Income is the highest protected group; High Income scheduled benefit = $31,000; Medium Income protected benefit = $24,000; maximum flattening = 50% of the benefit gap. The High Income benefit falls to $27,500.</div>
+            </div>
+          </div>
+          
+        </div>
+
+        <h3>DI spending</h3>
+        <div class="eq-card">
+          <div class="eq-head">Simplified DI benefit spending</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(d_0\)</dt><dd>2026 annual DI benefit anchor, $17,919.</dd></div>
+            <div class="vars-row"><dt>\(g_D\)</dt><dd>Real annual DI benefit-growth assumption, 1.0 percent.</dd></div>
+            <div class="vars-row"><dt>\(\kappa_D\)</dt><dd>DI spending calibration multiplier, 1.165.</dd></div>
+            <div class="vars-row"><dt>\(B_t^D\)</dt><dd>Modeled DI beneficiaries.</dd></div>
+            <div class="vars-row"><dt>\(E_t^D\)</dt><dd>Modeled DI spending.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          d_t=d_0(1+g_D)^{t-2026}
+          
+          \]</div><div class="equation-number">(20)</div></div>
+          <div class="equation-numbered"><div class="equation">\[
+          E_t^D=\kappa_D d_t B_t^D
+          
+          \]</div><div class="equation-number">(21)</div></div>
+          <div class="eq-note"><span class="tag direct">SSA data</span> \(d_0\) equals the May 2026 average monthly DI benefit of $1,493.25 multiplied by 12, from <a href="https://www.ssa.gov/policy/docs/quickfacts/stat_snapshot/2026-05.html">SSA Monthly Statistical Snapshot, May 2026, Table 2</a>. <span class="tag derived">Rounded calibration</span> Multiplying $17,919 by 8.102 million DI beneficiaries yields about $145.18 billion; a multiplier near 1.163 would match the Trustees' $168.8 billion 2026 DI total cost in Table IV.A2. The code uses the rounded calibration 1.165. <span class="tag choice">Model choice</span> The 1.0 percent real DI benefit-growth rate is not a direct Trustees-table assumption.</div>
+        </div>
+      </section>
+
+      <section class="card" id="funds">
+        <div class="kicker">8 · Trust-fund accounting</div>
+        <h2>Interest, cash flow, balances, and the trust-fund ratio</h2>
+
+        <div class="eq-card">
+          <div class="eq-head">Trust-fund interest</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(F_{t-1}\)</dt><dd>Trust-fund balance entering year \(t\).</dd></div>
+            <div class="vars-row"><dt>\(r_t\)</dt><dd>Real interest rate applied by the model; baseline 2.3 percent unless the optional stress scenario is active.</dd></div>
+            <div class="vars-row"><dt>\(I_t\)</dt><dd>Modeled interest income.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          I_t=r_t\max\{F_{t-1},0\}
+          
+          \]</div><div class="equation-number">(22)</div></div>
+          <div class="eq-note"><span class="tag direct">SSA benchmark</span> The 2.3 percent value is the Trustees' real interest rate assumption for 2044 and later in Table II.C1. The simulator applies it as a constant baseline from 2026, which is a model simplification.</div>
+        </div>
+
+        <div class="eq-card">
+          <div class="eq-head">OASI annual cash flow and balance</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(T_t^O\)</dt><dd>OASI payroll-tax revenue.</dd></div>
+            <div class="vars-row"><dt>\(T_t^{BT}\)</dt><dd>Revenue from taxation of OASI benefits.</dd></div>
+            <div class="vars-row"><dt>\(I_t^O\)</dt><dd>OASI trust-fund interest income.</dd></div>
+            <div class="vars-row"><dt>\(E_t^O\)</dt><dd>OASI benefit spending.</dd></div>
+            <div class="vars-row"><dt>\(D_t^F\)</dt><dd>Payroll diverted from PAYG financing to individual funded accounts.</dd></div>
+            <div class="vars-row"><dt>\(X_t^{SWF}\)</dt><dd>Transfer from the optional sovereign wealth fund to the trust fund.</dd></div>
+            <div class="vars-row"><dt>\(CF_t^O\)</dt><dd>OASI cash flow.</dd></div>
+            <div class="vars-row"><dt>\(F_t^O\)</dt><dd>End-of-year OASI trust-fund balance.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          CF_t^O=T_t^O+T_t^{BT}+I_t^O-E_t^O-D_t^F+X_t^{SWF}
+          
+          \]</div><div class="equation-number">(23)</div></div>
+          <div class="equation-numbered"><div class="equation">\[
+          F_t^O=\max\!\left(0,F_{t-1}^O+CF_t^O\right)
+          
+          \]</div><div class="equation-number">(24)</div></div>
+          <div class="eq-note"></div>
+        </div>
+
+        <div class="eq-card">
+          <div class="eq-head">Combining the OASI and DI trust funds</div>
+          <p style="padding:0 14px 10px;margin:0;font-size:12px;line-height:1.55;color:#5c6e85">When <strong>Combine OASI + DI funds</strong> is enabled, the simulator pools OASI and DI reserves, annual income, interest, and program costs. The pooled balance is then used for the displayed depletion date, trust-fund ratio, cash flow, and debt calculation. When the option is disabled, those selected-fund measures use OASI alone.</p>
+        </div>
+
+        <div class="eq-card">
+          <div class="eq-head">Simulator trust-fund ratio</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(F_{t-1}^{sel}\)</dt><dd>Selected opening trust-fund balance: OASI alone or combined OASDI if the user pools the funds.</dd></div>
+            <div class="vars-row"><dt>\(E_t^{sel}\)</dt><dd>Selected modeled benefit spending: OASI benefits alone or OASI plus DI spending.</dd></div>
+            <div class="vars-row"><dt>\(q_t\)</dt><dd>Simulator trust-fund ratio.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          q_t=\frac{F_{t-1}^{sel}}{E_t^{sel}}
+          
+          \]</div><div class="equation-number">(25)</div></div>
+          
+        </div>
+
+      </section>
+
+      <section class="card" id="actuarial">
+        <div class="kicker">9 · 75-year actuarial balance</div>
+        <h2>Present-value solvency measure</h2>
+
+        <div class="eq-card">
+          <div class="eq-head">Present-value taxable payroll and non-interest cash flow</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(TP_t\)</dt><dd>Modeled taxable payroll in year \(t\).</dd></div>
+            <div class="vars-row"><dt>\(CF_t^{sel}\)</dt><dd>Selected OASI or combined OASDI cash flow, including interest.</dd></div>
+            <div class="vars-row"><dt>\(I_t^{sel}\)</dt><dd>Interest component of selected cash flow.</dd></div>
+            <div class="vars-row"><dt>\(r\)</dt><dd>Constant real discount rate used for the actuarial-balance calculation; baseline 2.3 percent.</dd></div>
+            <div class="vars-row"><dt>\(j=t-2025\)</dt><dd>Discount exponent, so 2026 is discounted one period.</dd></div>
+            <div class="vars-row"><dt>\(PV(TP)\)</dt><dd>Present value of taxable payroll over 2026–2100.</dd></div>
+            <div class="vars-row"><dt>\(PV(NI-C)\)</dt><dd>Present value of non-interest income minus modeled cost.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          PV(TP)=\sum_{t=2026}^{2100}\frac{TP_t}{(1+r)^{t-2025}}
+          
+          \]</div><div class="equation-number">(26)</div></div>
+          <div class="equation-numbered"><div class="equation">\[
+          PV(NI-C)=\sum_{t=2026}^{2100}\frac{CF_t^{sel}-I_t^{sel}}{(1+r)^{t-2025}}
+          
+          \]</div><div class="equation-number">(27)</div></div>
+        </div>
+
+        <div class="eq-card">
+          <div class="eq-head">Actuarial balance</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(F_0\)</dt><dd>Beginning trust-fund reserves: OASI alone or OASI plus DI for a combined calculation.</dd></div>
+            <div class="vars-row"><dt>\(E_{2100}^{target}\)</dt><dd>One year of modeled 2100 scheduled program cost used as the terminal reserve target.</dd></div>
+            <div class="vars-row"><dt>\(PV(F_T^*)\)</dt><dd>Present value of the terminal reserve target.</dd></div>
+            <div class="vars-row"><dt>\(AB\)</dt><dd>75-year actuarial balance as a share of taxable payroll.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          PV(F_T^*)=\frac{E_{2100}^{target}}{(1+r)^{75}}
+          
+          \]</div><div class="equation-number">(28)</div></div>
+          <div class="equation-numbered"><div class="equation">\[
+          AB=\frac{PV(NI-C)+F_0-PV(F_T^*)}{PV(TP)}
+          
+          \]</div><div class="equation-number">(29)</div></div>
+        </div>
+      </section>
+
+      <section class="card" id="debt">
+        <div class="kicker">10 · Public-debt measure</div>
+        <h2>Increases in public debt caused by Social Security</h2>
+        <p><strong>Financing assumption.</strong> After trust-fund depletion, the model assumes the federal government uses general-fund transfers to continue paying scheduled Social Security benefits rather than allowing benefits to be automatically reduced to the level payable from incoming program revenue.</p>
+
+        <div class="eq-card">
+          <div class="eq-head">Incremental debt recursion</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(D_{t-1}\)</dt><dd>Incremental public debt entering year \(t\).</dd></div>
+            <div class="vars-row"><dt>\(CF_t^{sel}\)</dt><dd>Selected Social Security cash flow; a deficit is negative.</dd></div>
+            <div class="vars-row"><dt>\(B_t^{SWF}\)</dt><dd>New sovereign-wealth-fund borrowing, nonzero only in the fund's creation year.</dd></div>
+            <div class="vars-row"><dt>\(\tilde D_t\)</dt><dd>Debt after the year's primary financing gap and SWF borrowing but before debt interest.</dd></div>
+            <div class="vars-row"><dt>\(r_t\)</dt><dd>Effective real interest rate.</dd></div>
+            <div class="vars-row"><dt>\(D_t\)</dt><dd>End-of-year incremental public debt.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          \tilde D_t=D_{t-1}-CF_t^{sel}+B_t^{SWF}
+          
+          \]</div><div class="equation-number">(30)</div></div>
+          <div class="equation-numbered"><div class="equation">\[
+          D_t=\tilde D_t+\max\{0,r_t\tilde D_t\}
+          
+          \]</div><div class="equation-number">(31)</div></div>
+        </div>
+      </section>
+
+      <section class="card" id="stabilizers">
+        <div class="kicker">11 · Automatic stabilizers</div>
+        <h2>Feedback rules tied to the prior-year trust-fund ratio</h2>
+        <p>Stabilizers respond to the prior year's simulator trust-fund ratio beginning in the user-selected stabilizer start year. A deadband prevents constant small adjustments around the target. Priority determines how many consecutive years outside the deadband must occur before each instrument begins responding.</p>
+
+        <div class="eq-card">
+          <div class="eq-head">Deviation region and activation streak</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(q_{t-1}\)</dt><dd>Prior-year simulator trust-fund ratio.</dd></div>
+            <div class="vars-row"><dt>\(t_S\)</dt><dd>User-selected stabilizer start year. Stabilizer conditions are evaluated only for \(t\ge t_S\).</dd></div>
+            <div class="vars-row"><dt>\(q^*\)</dt><dd>Target trust-fund ratio; dormant default 3.0.</dd></div>
+            <div class="vars-row"><dt>\(\delta\)</dt><dd>Deadband half-width; dormant default 0.05.</dd></div>
+            <div class="vars-row"><dt>\(L_t\)</dt><dd>Indicator equal to 1 when reserves are below the lower band.</dd></div>
+            <div class="vars-row"><dt>\(H_t\)</dt><dd>Indicator equal to 1 when reserves are above the upper band.</dd></div>
+            <div class="vars-row"><dt>\(n_t\)</dt><dd>Number of consecutive years outside the deadband.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          L_t=\mathbf{1}\{q_{t-1}&lt;q^*-\delta\},\qquad
+          H_t=\mathbf{1}\{q_{t-1}&gt;q^*+\delta\}
+          
+          \]</div><div class="equation-number">(32)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger">
+              <span class="example-chip">Illustrative Example</span>
+              <span class="example-hint">Hover or click to show an illustrative numerical substitution</span>
+            </div>
+            <div class="example-body">
+              <div class="equation example">\[
+          L_t=\mathbf{1}\{2.80<3.00-0.05\}=1,
+\qquad
+H_t=\mathbf{1}\{2.80>3.00+0.05\}=0
+          \]</div>
+          <div class="example-note">Policy settings used in this example: target trust-fund ratio = 3.00; deadband = 0.05; prior-year trust-fund ratio = 2.80. Because 2.80 is below the 2.95 lower threshold, the low-reserve condition is activated.</div>
+            </div>
+          </div>
+          <div class="equation-numbered"><div class="equation">\[
+          n_t=
+          \begin{cases}
+          n_{t-1}+1,&L_t+H_t=1,\\
+          0,&L_t+H_t=0.
+          \end{cases}
+          
+          \]</div><div class="equation-number">(33)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger">
+              <span class="example-chip">Illustrative Example</span>
+              <span class="example-hint">Hover or click to show an illustrative numerical substitution</span>
+            </div>
+            <div class="example-body">
+              <div class="equation example">\[
+          n_t=n_{t-1}+1=1+1=2
+          \]</div>
+          <div class="example-note">Policy settings used in this example: the trust-fund ratio remains outside the deadband for a second consecutive year. The prior activation streak is 1 year, so the current streak increases to 2 years.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eq-card">
+          <div class="eq-head">Instrument update rules</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(m_t^S\)</dt><dd>Benefit-stabilizer multiplier, bounded between 0 and 1.</dd></div>
+            <div class="vars-row"><dt>\(a_t^S\)</dt><dd>Cumulative retirement-age stabilizer adjustment in years, bounded below by zero.</dd></div>
+            <div class="vars-row"><dt>\(z_t^S\)</dt><dd>Cumulative payroll-tax stabilizer adjustment, bounded below by zero.</dd></div>
+            <div class="vars-row"><dt>\(s_B,s_R,s_T\)</dt><dd>Maximum annual adjustment speeds for benefits, retirement age, and payroll tax.</dd></div>
+            <div class="vars-row"><dt>\(p_B,p_R,p_T\)</dt><dd>Activation priorities; an instrument can move when \(n_t\ge p_j\).</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          \begin{aligned}
+          m_t^S=
+          \min\Bigg\{1,\,
+          \max\Bigg\{0,\,
+          &m_{t-1}^S-s_B L_t\mathbf{1}\{n_t\ge p_B\}\\
+          &+s_B H_t\mathbf{1}\{n_t\ge p_B\}
+          \Bigg\}\Bigg\}
+          \end{aligned}
+          
+          \]</div><div class="equation-number">(34)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger">
+              <span class="example-chip">Illustrative Example</span>
+              <span class="example-hint">Hover or click to show an illustrative numerical substitution</span>
+            </div>
+            <div class="example-body">
+              <div class="equation example">\[
+          \begin{aligned}
+m_t^S
+&=\min\{1,\max\{0,0.980-0.005(1)(1)+0.005(0)(1)\}\}\\
+&=0.975,\\[5pt]
+b_t^{S}
+&=(0.975)(\$30{,}000)=\$29{,}250.
+\end{aligned}
+          \]</div>
+          <div class="example-note">Policy settings used in this example: benefit stabilizer enabled; benefit-stabilizer priority threshold satisfied; prior stabilizer multiplier = 0.980; maximum annual benefit adjustment = 0.5%; trust-fund ratio is below the target band. The multiplier therefore falls from 0.980 to 0.975. If the beneficiary's otherwise scheduled annual benefit is $30,000, the stabilizer reduces the payable benefit to $29,250. Relative to the $30,000 scheduled benefit, the cumulative stabilizer reduction is $750 per year. The prior 0.980 multiplier would have produced a $29,400 benefit, so this year's additional stabilizer action reduces the annual benefit by a further $150.</div>
+            </div>
+          </div>
+          <div class="equation-numbered"><div class="equation">\[
+          \begin{aligned}
+          a_t^S=\max\!\Big[0,&\,
+          a_{t-1}^S+s_R L_t\mathbf{1}\{n_t\ge p_R\}\\
+          &-s_R H_t\mathbf{1}\{n_t\ge p_R\}
+          \Big]
+          \end{aligned}
+          
+          \]</div><div class="equation-number">(35)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger">
+              <span class="example-chip">Illustrative Example</span>
+              <span class="example-hint">Hover or click to show an illustrative numerical substitution</span>
+            </div>
+            <div class="example-body">
+              <div class="equation example">\[
+          a_t^S=\max\{0,0.25+0.25(1)(1)-0.25(0)(1)\}
+=0.50
+          \]</div>
+          <div class="example-note">Policy settings used in this example: retirement-age stabilizer enabled; retirement-age priority threshold satisfied; prior cumulative stabilizer adjustment = 0.25 year; maximum annual retirement-age adjustment = 0.25 year; trust-fund ratio remains below the target band. The cumulative adjustment rises to 0.50 year.</div>
+            </div>
+          </div>
+          <div class="equation-numbered"><div class="equation">\[
+          \begin{aligned}
+          z_t^S=\max\!\Big[0,&\,
+          z_{t-1}^S+s_T L_t\mathbf{1}\{n_t\ge p_T\}\\
+          &-s_T H_t\mathbf{1}\{n_t\ge p_T\}
+          \Big]
+          \end{aligned}
+          
+          \]</div><div class="equation-number">(36)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger">
+              <span class="example-chip">Illustrative Example</span>
+              <span class="example-hint">Hover or click to show an illustrative numerical substitution</span>
+            </div>
+            <div class="example-body">
+              <div class="equation example">\[
+          z_t^S=\max\{0,0.10+0.10(1)(1)-0.10(0)(1)\}
+=0.20
+          \]</div>
+          <div class="example-note">Policy settings used in this example: payroll-tax stabilizer enabled; payroll-tax priority threshold satisfied; prior cumulative payroll-tax adjustment = 0.10 percentage point; maximum annual adjustment = 0.10 percentage point; trust-fund ratio remains below the target band. The cumulative adjustment rises to 0.20 percentage point.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eq-card">
+          <div class="eq-head">Automatic inflation-indexing trigger</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(\bar q\)</dt><dd>User-selected trust-fund-ratio trigger; dormant default 1.0.</dd></div>
+            <div class="vars-row"><dt>\(g_t^B\)</dt><dd>Scheduled real benefit growth from equation (15).</dd></div>
+            <div class="vars-row"><dt>\(\tilde g_t^B\)</dt><dd>Effective real benefit growth after the trigger.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          \tilde g_t^B=
+          \begin{cases}
+          \min\{0,g_t^B\},&q_{t-1}&lt;\bar q,\\
+          g_t^B,&q_{t-1}\ge\bar q.
+          \end{cases}
+          
+          \]</div><div class="equation-number">(37)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger">
+              <span class="example-chip">Illustrative Example</span>
+              <span class="example-hint">Hover or click to show an illustrative numerical substitution</span>
+            </div>
+            <div class="example-body">
+              <div class="equation example">\[
+          \tilde g_t^B=\min\{0,0.009576\}=0
+\qquad\text{when }q_{t-1}=0.80<\bar q=1.00
+          \]</div>
+          <div class="example-note">Policy settings used in this example: automatic inflation indexing is enabled; trigger trust-fund ratio = 1.00; prior-year trust-fund ratio = 0.80; scheduled real benefit growth = 0.9576%. Because 0.80 is below the trigger, positive real benefit growth is temporarily capped at 0%.</div>
+            </div>
+          </div>
+          <div class="eq-note">When positive real benefit growth is frozen, benefits can still retain inflation protection; in real 2026 dollars, full inflation indexing corresponds to zero real growth.</div>
+        </div>
+      </section>
+
+      <section class="card" id="funded">
+        <div class="kicker">12 · Individually funded accounts</div>
+        <h2>Contribution diversion and delayed payout</h2>
+
+        <div class="eq-card">
+          <div class="eq-head">Contribution-rate phase-in</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(f_0\)</dt><dd>Initial funded-account contribution rate when the feature is enabled.</dd></div>
+            <div class="vars-row"><dt>\(f^*\)</dt><dd>Target funded-account contribution rate.</dd></div>
+            <div class="vars-row"><dt>\(t_F\)</dt><dd>Funded-account start year.</dd></div>
+            <div class="vars-row"><dt>\(H_F\)</dt><dd>Contribution phase-in period.</dd></div>
+            <div class="vars-row"><dt>\(\lambda_t^F\)</dt><dd>Share of the transition from the initial to the target funded-account contribution rate completed by year \(t\), bounded between 0 and 1.</dd></div>
+            <div class="vars-row"><dt>\(f_t\)</dt><dd>Contribution rate in year \(t\).</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          \lambda_t^F=
+          \min\left\{1,\,
+          \max\left\{0,\frac{t-t_F}{H_F}\right\}
+          \right\}
+          
+          \]</div><div class="equation-number">(38a)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger">
+              <span class="example-chip">Illustrative Example</span>
+              <span class="example-hint">Hover or click to show an illustrative numerical substitution</span>
+            </div>
+            <div class="example-body">
+              <div class="equation example">\[
+          \lambda_{2035}^{F}
+=\min\left\{1,\max\left\{0,\frac{2035-2030}{10}\right\}\right\}
+=0.50
+          \]</div>
+          <div class="example-note">Policy settings used in this example: funded accounts enabled; contribution start year = 2030; phase-in period = 10 years. By 2035, 50% of the contribution-rate transition has been completed.</div>
+            </div>
+          </div>
+          <div class="equation-numbered"><div class="equation">\[
+          f_t=f_0+(f^*-f_0)\lambda_t^F
+          
+          \]</div><div class="equation-number">(38b)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger">
+              <span class="example-chip">Illustrative Example</span>
+              <span class="example-hint">Hover or click to show an illustrative numerical substitution</span>
+            </div>
+            <div class="example-body">
+              <div class="equation example">\[
+          f_{2035}=0+(0.02-0)(0.50)=0.01=1.0\%
+          \]</div>
+          <div class="example-note">Policy settings used in this example: initial funded-account contribution = 0%; target contribution = 2% of payroll; implementation share = 50%. The effective contribution rate in 2035 is therefore 1%.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="eq-card">
+          <div class="eq-head">Aggregate diversion and income-group allocation</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(TP_t\)</dt><dd>Modeled taxable payroll.</dd></div>
+            <div class="vars-row"><dt>\(D_t^F\)</dt><dd>Aggregate payroll diverted from PAYG to funded accounts.</dd></div>
+            <div class="vars-row"><dt>\(e_g\)</dt><dd>Relative earnings factor for income group \(g\).</dd></div>
+            <div class="vars-row"><dt>\(w_g\)</dt><dd>Income-group weight.</dd></div>
+            <div class="vars-row"><dt>\(c_{g,t}\)</dt><dd>Funded contribution per covered worker assigned to group \(g\).</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          D_t^F=f_tTP_t
+          
+          \]</div><div class="equation-number">(39)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger">
+              <span class="example-chip">Illustrative Example</span>
+              <span class="example-hint">Hover or click to show an illustrative numerical substitution</span>
+            </div>
+            <div class="example-body">
+              <div class="equation example">\[
+          D_t^F=0.01(\$14.0\text{ trillion})
+=\$140\text{ billion}
+          \]</div>
+          <div class="example-note">Policy settings used in this example: funded-account contribution rate = 1% of taxable payroll; taxable payroll = $14 trillion. The reform diverts $140 billion from PAYG financing into individual funded accounts.</div>
+            </div>
+          </div>
+          <div class="equation-numbered"><div class="equation">\[
+          c_{g,t}=s_ty_tf_t\frac{e_g}{\sum_jw_je_j}
+          
+          \]</div><div class="equation-number">(40)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger">
+              <span class="example-chip">Illustrative Example</span>
+              <span class="example-hint">Hover or click to show an illustrative numerical substitution</span>
+            </div>
+            <div class="example-body">
+              <div class="equation example">\[
+          \begin{aligned}
+\sum_j w_je_j
+&=0.20(0.25)+0.25(0.45)+0.32(1.00)+0.18(1.60)+0.05(2.452)\\
+&\approx 0.893,\\[4pt]
+c_{H,t}
+&=(0.90)(\$80{,}000)(0.01)\frac{1.60}{0.893}\\
+&\approx \$1,289.89
+\end{aligned}
+          \]</div>
+          <div class="example-note">Policy settings used in this example: taxable-payroll share = 90%; real payroll per worker = $80,000; funded-account contribution rate = 1%; High Income earnings factor = 1.60; beneficiary-group weights = 20%, 25%, 32%, 18%, and 5%. The High Income group receives an illustrative annual contribution of approximately the amount shown above after normalization across all five groups.</div>
+            </div>
+          </div>
+          <div class="eq-note">The relative earnings factors used by the model are 0.25, 0.45, 1.00, 1.60, and the 2026 taxable maximum divided by the 2026 Average Wage Index.</div>
+        </div>
+
+        <div class="eq-card">
+          <div class="eq-head">Funded-account payout</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(N_F\)</dt><dd>Holding period between contribution and payout.</dd></div>
+            <div class="vars-row"><dt>\(r_M\)</dt><dd>Assumed real market return.</dd></div>
+            <div class="vars-row"><dt>\(p_{g,t}^{F}\)</dt><dd>Funded-account payout per worker for group \(g\) in year \(t\).</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          p_{g,t}^{F}=c_{g,t-N_F}(1+r_M)^{N_F},\qquad t\ge t_F+N_F
+          
+          \]</div><div class="equation-number">(41)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger">
+              <span class="example-chip">Illustrative Example</span>
+              <span class="example-hint">Hover or click to show an illustrative numerical substitution</span>
+            </div>
+            <div class="example-body">
+              <div class="equation example">\[
+          p_{g,t}^F
+=\$1{,}500(1+0.045)^{30}
+\approx \$5,618
+          \]</div>
+          <div class="example-note">Policy settings used in this example: annual funded-account contribution entering this cohort calculation = $1,500; funded period = 30 years; real market return = 4.5% per year; payout is modeled as a lump sum at the end of the funded period.</div>
+            </div>
+          </div>
+          <div class="eq-note"><span class="tag choice">Policy experiment</span> The model treats the payout as a lump-sum value after the selected holding period. It does not model administration costs, portfolio risks, or taxes.</div>
+        </div>
+      </section>
+
+      <section class="card" id="swf">
+        <div class="kicker">13 · Sovereign wealth fund</div>
+        <h2>Borrowed principal, investment return, and trust-fund transfer</h2>
+
+        <div class="eq-card">
+          <div class="eq-head">Sovereign-wealth-fund recursion</div>
+          <dl class="vars">
+            <div class="vars-row"><dt>\(S_t^{open}\)</dt><dd>Opening SWF balance in year \(t\), including initial borrowed principal in 2026.</dd></div>
+            <div class="vars-row"><dt>\(r_M\)</dt><dd>Assumed real market return.</dd></div>
+            <div class="vars-row"><dt>\(\rho\)</dt><dd>Annual transfer rate applied to the opening fund balance.</dd></div>
+            <div class="vars-row"><dt>\(X_t^{SWF}\)</dt><dd>Transfer from the SWF to the trust fund.</dd></div>
+            <div class="vars-row"><dt>\(S_t\)</dt><dd>End-of-year SWF balance.</dd></div>
+          </dl>
+          <div class="equation-numbered"><div class="equation">\[
+          X_t^{SWF}=\min\!\left[S_t^{open}(1+r_M),\;\rho S_t^{open}\right]
+          
+          \]</div><div class="equation-number">(42)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger">
+              <span class="example-chip">Illustrative Example</span>
+              <span class="example-hint">Hover or click to show an illustrative numerical substitution</span>
+            </div>
+            <div class="example-body">
+              <div class="equation example">\[
+          X_t^{SWF}
+=\min\{\$1.0\text{T}(1.045),\,0.03(\$1.0\text{T})\}
+=\$30\text{B}
+          \]</div>
+          <div class="example-note">Policy settings used in this example: sovereign wealth fund enabled; opening fund balance = $1.0 trillion; real market return = 4.5%; annual transfer rate = 3% of the opening balance; payout delay has already elapsed. The annual transfer is $30 billion.</div>
+            </div>
+          </div>
+          <div class="equation-numbered"><div class="equation">\[
+          S_t=S_t^{open}(1+r_M)-X_t^{SWF}
+          
+          \]</div><div class="equation-number">(43)</div></div>
+          <div class="example-wrap" tabindex="0">
+            <div class="example-trigger">
+              <span class="example-chip">Illustrative Example</span>
+              <span class="example-hint">Hover or click to show an illustrative numerical substitution</span>
+            </div>
+            <div class="example-body">
+              <div class="equation example">\[
+          S_t=\$1.0\text{T}(1.045)-\$30\text{B}
+=\$1.015\text{T}
+          \]</div>
+          <div class="example-note">Policy settings used in this example: opening sovereign wealth fund balance = $1.0 trillion; real market return = 4.5%; annual transfer = $30 billion. After investment earnings and the transfer, the year-end fund balance is $1.015 trillion.</div>
+            </div>
+          </div>
+          <div class="eq-note">Equation (42) applies only after the selected payout delay. Initial SWF borrowing is also added to the simulator's measure of increases in public debt caused by Social Security.</div>
+        </div>
+      </section>
+
+      <section class="card" id="validation">
+        <div class="kicker">14 · Validation targets</div>
+        <h2>Baseline results compared with the 2026 Trustees Report</h2>
+        <p>The table below compares the simulator's default SSA Intermediate baseline with three key outcomes reported by the Social Security Administration.</p>
+
+        <div class="tablewrap"><table class="table">
+          <thead>
+            <tr>
+              <th>Outcome</th>
+              <th>Simulator baseline</th>
+              <th>2026 Trustees Report</th>
+              <th>Difference</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>OASI trust-fund depletion</td>
+              <td>2032</td>
+              <td>Q4 2032</td>
+              <td>Same calendar year</td>
+            </tr>
+            <tr>
+              <td>OASI 75-year actuarial balance</td>
+              <td>−4.53% of taxable payroll</td>
+              <td>−4.55% of taxable payroll</td>
+              <td>+0.02 percentage point</td>
+            </tr>
+            <tr>
+              <td>Combined OASDI 75-year actuarial balance</td>
+              <td>−4.40% of taxable payroll</td>
+              <td>−4.42% of taxable payroll</td>
+              <td>+0.02 percentage point</td>
+            </tr>
+          </tbody>
+        </table></div>
+
+        <div class="eq-note">Sources: OASI depletion date from the <a href="https://www.ssa.gov/oact/TRSUM/">2026 Trustees Report Summary, Table 10</a>; actuarial balances from <a href="https://www.ssa.gov/OACT/TR/2026/IV_B_LRest.html">2026 Trustees Report, Table IV.B8</a>.</div>
+      </section>
+
+      <section class="card" id="sources">
+        <div class="kicker">15 · Source tables &amp; data</div>
+        <h2>Primary references</h2>
+        <div class="source-list">
+
+          <div class="source-item"><b>2026 OASDI Trustees Report — Tables V.A1, V.A2, and V.A4</b><p>
+            <a href="https://www.ssa.gov/oact/TR/2026/lr5a1.html">Table V.A1</a> provides the SSA fertility assumptions,
+            <a href="https://www.ssa.gov/oact/TR/2026/lr5a2.html">Table V.A2</a> provides the SSA immigration assumptions, and
+            <a href="https://www.ssa.gov/oact/TR/2026/lr5a4.html">Table V.A4</a> provides period life expectancy.
+            These tables supply the demographic assumptions used to construct the SSA Intermediate, Low Cost, and High Cost scenarios.
+          </p></div>
+
+          <div class="source-item"><b>2026 OASDI Trustees Report — Table IV.B4</b><p>
+            <a href="https://www.ssa.gov/oact/TR/2026/lr4b4.html">Covered Workers and Beneficiaries</a>.
+            Source for the 2026 covered-worker, OASI-beneficiary, and DI-beneficiary calibration targets.
+          </p></div>
+
+          <div class="source-item"><b>2026 OASDI Trustees Report — Table VI.G1</b><p>
+            <a href="https://www.ssa.gov/OACT/TR/2026/lr6g1.html">Selected Economic Variables</a>.
+            Source for 2026 taxable payroll and the Average Wage Index.
+          </p></div>
+
+          <div class="source-item"><b>2026 OASDI Trustees Report — Tables IV.A1, IV.A2, and IV.B2</b><p>
+            <a href="https://www.ssa.gov/oact/TR/2026/IV_A_SRest.html">Tables IV.A1 and IV.A2</a> provide the 2026 trust-fund income, cost, taxation-of-benefits revenue, and reserve values used by the model.
+            <a href="https://www.ssa.gov/oact/TR/2026/lr4b2.html">Table IV.B2</a> provides the long-run taxation-of-benefits income rate used to calibrate the benefit-tax revenue path.
+          </p></div>
+
+          <div class="source-item"><b>2026 OASDI Trustees Report — Table III.A1</b><p>
+            <a href="https://www.ssa.gov/oact/TR/2026/III_A_cyoper.html">Operations of the OASI Trust Fund in 2025</a>.
+            Source for the trust-fund reserves entering the 2026 projection.
+          </p></div>
+
+          <div class="source-item"><b>2026 OASDI Trustees Report — Table II.C1</b><p>
+            <a href="https://www.ssa.gov/oact/TR/2026/II_C_assump.html">Key assumptions and summary measures</a>.
+            Source for the model's baseline inflation, real covered-wage growth, and real interest-rate assumptions.
+          </p></div>
+
+          <div class="source-item"><b>2026 OASDI Trustees Report — Section V.C and Tables V.C3, V.C6, and V.C7</b><p>
+            <a href="https://www.ssa.gov/OACT/TR/2026/V_C_prog.html">Program-specific assumptions and methods</a> provides the current-law full retirement age, payroll-tax rates, contribution and benefit base, and taxable-ratio discussion.
+            <a href="https://www.ssa.gov/oact/TR/2026/lr5c7.html">Table V.C7</a> provides the scaled-worker earnings categories and scheduled benefit structure used to define the model's income groups.
+          </p></div>
+
+          <div class="source-item"><b>2026 OASDI Trustees Report — Table IV.B8</b><p>
+            <a href="https://www.ssa.gov/OACT/TR/2026/IV_B_LRest.html">Components of 75-Year Actuarial Balance and Unfunded Obligation</a>.
+            Source for the official OASI and combined OASDI 75-year actuarial balances used in the baseline validation comparison.
+          </p></div>
+
+          <div class="source-item"><b>2026 Trustees Report Summary — Table 10</b><p>
+            <a href="https://www.ssa.gov/oact/TRSUM/">Trustees Report Summary</a>.
+            Source for the official OASI trust-fund depletion benchmark used in the baseline validation comparison.
+          </p></div>
+
+          <div class="source-item"><b>SSA Monthly Statistical Snapshot — May 2026, Table 2</b><p>
+            <a href="https://www.ssa.gov/policy/docs/quickfacts/stat_snapshot/2026-05.html">Social Security benefits, May 2026</a>.
+            Source for the average monthly OASI and DI benefit values used to calibrate the model's starting benefit levels.
+          </p></div>
+
+          <div class="source-item"><b>SSA Annual Statistical Supplement, 2026 — Table 5.J6</b><p>
+            <a href="https://www.ssa.gov/policy/docs/statcomps/supplement/2026/5j.html">Percentage distribution of retired-worker beneficiaries by monthly benefit</a>.
+            Used to estimate the beneficiary shares for the Very Low, Low, and Medium income groups and the combined $3,000+ upper-income group.
+          </p></div>
+
+          <div class="source-item"><b>Congressional Budget Office</b><p>
+            <a href="https://www.cbo.gov/publication/61994"><em>The Demographic Outlook: 2026 to 2056</em></a>.
+            Source for the CBO fertility, life-expectancy, and net-immigration assumptions through 2056.
+          </p></div>
+
+          <div class="source-item"><b>U.S. Census Bureau — International Database</b><p>
+            <a href="https://www.census.gov/data-tools/demo/idb/">International Database (IDB)</a>.
+            Source for the Census fertility and life-expectancy assumptions. Because the Census source used for the scenario does not provide immigration assumptions, the model uses United Nations Median immigration.
+          </p></div>
+
+          <div class="source-item"><b>United Nations — World Population Prospects 2024</b><p>
+            <a href="https://population.un.org/wpp/">World Population Prospects 2024</a>.
+            Source for the common 2026 population-by-age baseline used by every demographic scenario and for the year-by-year population-by-age projections used directly in the United Nations scenarios.
+          </p></div>
+
+          <div class="source-item"><b>Avenir Health — Spectrum/DemProj</b><p>
+            <a href="https://www.avenirhealth.org/software-spectrum.html">Spectrum/DemProj</a>.
+            Used to generate annual population-by-age paths for the SSA, CBO, and Census scenarios from their fertility, life-expectancy, and immigration assumptions.
+          </p></div>
+
+        </div>
+      </section>
+
+      <div class="footer">Social Security Solvency Simulator · Methodology documentation · Version 1.0</div>
+    </main>
+  </div>
+</div>
+<script>
+const sections=[...document.querySelectorAll('main section[id]')];
+const links=[...document.querySelectorAll('#tocNav a')];
+const observer=new IntersectionObserver(entries=>{
+  const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top)[0];
+  if(!visible)return;
+  links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+visible.target.id));
+},{rootMargin:'-110px 0px -70% 0px',threshold:[0,.1]});
+sections.forEach(s=>observer.observe(s));
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  function setupSourceTooltip(buttonId, tooltipId){
+    const btn = document.getElementById(buttonId);
+    const tip = document.getElementById(tooltipId);
+    if(!btn || !tip) return;
+
+    let pinned = false;
+
+    function positionTip(){
+      const r = btn.getBoundingClientRect();
+      const margin = 12;
+      const tipWidth = Math.min(390, window.innerWidth - 32);
+
+      let left = r.left + (r.width / 2) - (tipWidth / 2);
+      left = Math.max(16, Math.min(left, window.innerWidth - tipWidth - 16));
+
+      tip.style.width = tipWidth + 'px';
+
+      const estimatedHeight = tip.offsetHeight || 140;
+      let top = r.bottom + 9;
+
+      if(top + estimatedHeight > window.innerHeight - margin){
+        top = Math.max(margin, r.top - estimatedHeight - 9);
+      }
+
+      tip.style.left = left + 'px';
+      tip.style.top = top + 'px';
+    }
+
+    function showTip(){
+      positionTip();
+      tip.classList.add('open');
+    }
+
+    function hideTip(){
+      if(!pinned) tip.classList.remove('open');
+    }
+
+    btn.addEventListener('mouseenter', showTip);
+    btn.addEventListener('mouseleave', hideTip);
+    btn.addEventListener('focus', showTip);
+    btn.addEventListener('blur', hideTip);
+
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      pinned = !pinned;
+      btn.setAttribute('aria-expanded', pinned ? 'true' : 'false');
+      if(pinned) showTip();
+      else tip.classList.remove('open');
+    });
+
+    document.addEventListener('click', function(e){
+      if(pinned && !tip.contains(e.target) && e.target !== btn){
+        pinned = false;
+        btn.setAttribute('aria-expanded','false');
+        tip.classList.remove('open');
+      }
+    });
+
+    window.addEventListener('resize', function(){
+      if(tip.classList.contains('open')) positionTip();
+    });
+    window.addEventListener('scroll', function(){
+      if(tip.classList.contains('open')) positionTip();
+    }, {passive:true});
+  }
+
+  setupSourceTooltip('cboNoteButton','cboFloatingTooltip');
+  setupSourceTooltip('censusNoteButton','censusFloatingTooltip');
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('.cbo-source-note').forEach(function(note){
+    const btn = note.querySelector('button');
+    if(!btn) return;
+    btn.addEventListener('click', function(e){
+      e.stopPropagation();
+      const open = note.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    document.addEventListener('click', function(e){
+      if(!note.contains(e.target)){
+        note.classList.remove('open');
+        btn.setAttribute('aria-expanded','false');
+      }
+    });
+  });
+});
+</script>
+
+
+<div id="censusFloatingTooltip" class="source-floating-tooltip" role="note"><strong>Census immigration assumption.</strong> The Census source used for this scenario did not provide immigration assumptions, so the model uses the United Nations Median immigration assumptions for the Census scenario.</div>
+<div id="cboFloatingTooltip" class="source-floating-tooltip" role="note"><strong>CBO extension after 2056.</strong> CBO's January 2026 demographic outlook ends in 2056. For 2057–2100, the simulator holds the total fertility rate at 1.53, holds annual net immigration constant at its terminal CBO level, and continues life expectancy along the pre-2056 trend. Results after 2056 under the CBO option should therefore be interpreted as a CBO-anchored scenario rather than an official CBO projection.</div>
+</body>
+</html>
