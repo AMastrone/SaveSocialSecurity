@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="description" content="Contact information for the Social Security Solvency Simulator."/>
+<title>Contact | Social Security Solvency Simulator</title>
+
+<style>
+:root{
+  --navy:#0a1830;
+  --navy2:#102442;
+  --blue:#2b6de9;
+  --ink:#122033;
+  --muted:#65758b;
+  --bg:#f4f7fb;
+  --card:#fff;
+  --line:#dce4ee;
+  --shadow:0 8px 30px rgba(16,36,66,.08);
+}
+
+*{box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+}
+
+a{
+  color:#245fcf;
+  text-decoration-thickness:1px;
+  text-underline-offset:2px;
+}
+
+a:hover{color:#17479f}
+
+header{
+  background:linear-gradient(120deg,var(--navy),var(--navy2));
+  color:#fff;
+  padding:16px 24px;
+  position:sticky;
+  top:0;
+  z-index:50;
+  box-shadow:0 4px 18px rgba(0,0,0,.16);
+}
+
+.head{
+  max-width:1320px;
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:18px;
+}
+
+.brand h1{
+  font-size:19px;
+  margin:0;
+}
+
+.brand p{
+  font-size:11px;
+  margin:3px 0 0;
+  color:#c9d6e8;
+}
+
+.head-actions{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  flex-wrap:wrap;
+}
+
+.badge{
+  border:1px solid rgba(255,255,255,.26);
+  background:rgba(255,255,255,.09);
+  padding:8px 12px;
+  border-radius:999px;
+  font-size:11px;
+}
+
+.header-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  min-height:38px;
+  padding:9px 13px;
+  border-radius:10px;
+  border:1px solid #cfd8e6;
+  background:#fff;
+  color:#243a57;
+  font-size:12px;
+  font-weight:800;
+  text-decoration:none;
+}
+
+.header-btn:hover{
+  background:#f6f8fc;
+  color:#243a57;
+}
+
+.shell{
+  max-width:1320px;
+  margin:0 auto;
+  padding:28px 24px 70px;
+}
+
+.hero{
+  background:linear-gradient(135deg,#fff,#f7faff);
+  border:1px solid var(--line);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  padding:30px;
+  margin-bottom:20px;
+}
+
+.eyebrow{
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  color:#5d6f86;
+  font-size:11px;
+  font-weight:850;
+  margin-bottom:8px;
+}
+
+.hero h2{
+  font-size:32px;
+  letter-spacing:-.025em;
+  margin:0;
+  color:var(--navy);
+}
+
+.hero p{
+  max-width:900px;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.65;
+  margin:10px 0 0;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  padding:24px;
+  margin-bottom:16px;
+}
+
+.card h2{
+  font-size:21px;
+  margin:0 0 12px;
+  color:var(--navy);
+  letter-spacing:-.015em;
+}
+
+.card p{
+  font-size:13px;
+  line-height:1.67;
+  color:#40516a;
+  margin:0 0 18px;
+  max-width:900px;
+}
+
+.contact-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.contact-link{
+  display:block;
+  border:1px solid #e1e7ef;
+  border-radius:11px;
+  background:#fbfcfe;
+  padding:16px;
+  text-decoration:none;
+  transition:background .15s ease,border-color .15s ease,transform .15s ease;
+}
+
+.contact-link:hover{
+  background:#f4f7fc;
+  border-color:#cad7e7;
+  transform:translateY(-1px);
+}
+
+.contact-label{
+  display:block;
+  color:#65758b;
+  font-size:10px;
+  font-weight:850;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  margin-bottom:5px;
+}
+
+.contact-value{
+  color:#243a57;
+  font-size:13px;
+  font-weight:800;
+  overflow-wrap:anywhere;
+}
+
+.footer{
+  color:#73839a;
+  font-size:11px;
+  line-height:1.6;
+  padding:8px 2px;
+  text-align:center;
+}
+
+@media(max-width:650px){
+  header{padding:13px 14px}
+
+  .shell{padding:16px 14px 50px}
+
+  .hero,.card{padding:19px}
+
+  .hero h2{font-size:24px}
+
+  .head{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+  }
+
+  .head-actions{width:100%}
+
+  .header-btn{flex:1}
+
+  .badge{display:none}
+
+  .contact-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="head">
+    <div class="brand">
+      <h1>Social Security Solvency Simulator</h1>
+      <p>Contact</p>
+    </div>
+
+    <div class="head-actions">
+      <div class="badge">Version 1.0</div>
+      <a href="index.html" class="header-btn">← Back to simulator</a>
+    </div>
+  </div>
+</header>
+
+<main class="shell">
+
+  <section class="hero">
+    <div class="eyebrow">Get in touch</div>
+    <h2>Contact</h2>
+    <p>
+      If you encounter any issues with the simulator or would like to make a suggestion, you can reach out via email or LinkedIn.
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>Contact Information</h2>
+    <p>
+      Feedback, bug reports, and suggestions for improving the Social Security Solvency Simulator are welcome.
+    </p>
+
+    <div class="contact-grid">
+      <a class="contact-link" href="mailto:mastroneandrew@gmail.com">
+        <span class="contact-label">Email</span>
+        <span class="contact-value">mastroneandrew@gmail.com</span>
+      </a>
+
+      <a class="contact-link" href="https://www.linkedin.com/in/andrew-mastrone" target="_blank" rel="noopener noreferrer">
+        <span class="contact-label">LinkedIn</span>
+        <span class="contact-value">www.linkedin.com/in/andrew-mastrone</span>
+      </a>
+    </div>
+  </section>
+
+  <div class="footer">
+    Social Security Solvency Simulator · Version 1.0
+  </div>
+
+</main>
+
+</body>
+</html>
