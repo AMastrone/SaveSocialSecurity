@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KYHPPX819C"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-KYHPPX819C');
+</script>
+
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="description" content="Release history and updates for the Social Security Solvency Simulator."/>
+<title>Change Log | Social Security Solvency Simulator</title>
+
+<style>
+:root{
+  --navy:#0a1830;
+  --navy2:#102442;
+  --blue:#2b6de9;
+  --ink:#122033;
+  --muted:#65758b;
+  --bg:#f4f7fb;
+  --card:#fff;
+  --line:#dce4ee;
+  --shadow:0 8px 30px rgba(16,36,66,.08);
+}
+
+*{box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+}
+
+header{
+  background:linear-gradient(120deg,var(--navy),var(--navy2));
+  color:#fff;
+  padding:16px 24px;
+  position:sticky;
+  top:0;
+  z-index:50;
+  box-shadow:0 4px 18px rgba(0,0,0,.16);
+}
+
+.head{
+  max-width:1320px;
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:18px;
+}
+
+.brand h1{
+  font-size:19px;
+  margin:0;
+}
+
+.brand p{
+  font-size:11px;
+  margin:3px 0 0;
+  color:#c9d6e8;
+}
+
+.head-actions{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  flex-wrap:wrap;
+}
+
+.badge{
+  border:1px solid rgba(255,255,255,.26);
+  background:rgba(255,255,255,.09);
+  padding:8px 12px;
+  border-radius:999px;
+  font-size:11px;
+}
+
+.header-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  min-height:38px;
+  padding:9px 13px;
+  border-radius:10px;
+  border:1px solid #cfd8e6;
+  background:#fff;
+  color:#243a57;
+  font-size:12px;
+  font-weight:800;
+  text-decoration:none;
+}
+
+.header-btn:hover{
+  background:#f6f8fc;
+  color:#243a57;
+}
+
+.shell{
+  max-width:1320px;
+  margin:0 auto;
+  padding:28px 24px 70px;
+}
+
+.hero{
+  background:linear-gradient(135deg,#fff,#f7faff);
+  border:1px solid var(--line);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  padding:30px;
+  margin-bottom:20px;
+}
+
+.eyebrow{
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  color:#5d6f86;
+  font-size:11px;
+  font-weight:850;
+  margin-bottom:8px;
+}
+
+.hero h2{
+  font-size:32px;
+  letter-spacing:-.025em;
+  margin:0;
+  color:var(--navy);
+}
+
+.hero p{
+  max-width:900px;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.65;
+  margin:10px 0 0;
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  padding:24px;
+  margin-bottom:16px;
+}
+
+.release-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:20px;
+  flex-wrap:wrap;
+  padding-bottom:16px;
+  margin-bottom:16px;
+  border-bottom:1px solid #edf1f5;
+}
+
+.kicker{
+  font-size:11px;
+  color:#65758b;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:800;
+  margin-bottom:5px;
+}
+
+.card h2{
+  font-size:21px;
+  margin:0;
+  color:var(--navy);
+  letter-spacing:-.015em;
+}
+
+.release-date{
+  display:inline-flex;
+  align-items:center;
+  min-height:32px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:#eef4fd;
+  color:#315e9b;
+  font-size:11px;
+  font-weight:800;
+  white-space:nowrap;
+}
+
+.card p{
+  font-size:13px;
+  line-height:1.67;
+  color:#40516a;
+  margin:0;
+}
+
+.footer{
+  color:#73839a;
+  font-size:11px;
+  line-height:1.6;
+  padding:8px 2px;
+  text-align:center;
+}
+
+@media(max-width:650px){
+  header{padding:13px 14px}
+
+  .shell{padding:16px 14px 50px}
+
+  .hero,.card{padding:19px}
+
+  .hero h2{font-size:24px}
+
+  .head{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+  }
+
+  .head-actions{width:100%}
+
+  .header-btn{flex:1}
+
+  .badge{display:none}
+
+  .release-head{
+    gap:10px;
+    padding-bottom:14px;
+    margin-bottom:14px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="head">
+    <div class="brand">
+      <h1>Social Security Solvency Simulator</h1>
+      <p>Release history &amp; updates</p>
+    </div>
+
+    <div class="head-actions">
+      <div class="badge">Version 1.0</div>
+      <a href="index.html" class="header-btn">← Back to simulator</a>
+    </div>
+  </div>
+</header>
+
+<main class="shell">
+
+  <section class="hero">
+    <div class="eyebrow">Release history</div>
+    <h2>Change Log</h2>
+    <p>
+      Updates and release history for the Social Security Solvency Simulator.
+    </p>
+  </section>
+
+  <section class="card">
+    <div class="release-head">
+      <div>
+        <div class="kicker">Version 1.0</div>
+        <h2>Full Release</h2>
+      </div>
+      <div class="release-date">October 5th, 2026</div>
+    </div>
+
+    <p>
+      Full release of the Social Security Solvency Simulator. Build your own Social Security reform package, evaluate its performance, and stress-test it across alternative demographic and economic assumptions.
+    </p>
+  </section>
+
+  <div class="footer">
+    Social Security Solvency Simulator · Version 1.0
+  </div>
+
+</main>
+
+</body>
+</html>
